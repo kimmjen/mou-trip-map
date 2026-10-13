@@ -268,7 +268,7 @@ function render(d){
    const chips=[...new Set((chipify(steps.join(' ')).match(/<span class="chip[^"]*">[^<]*<\/span>/g)||[]))].join('');
    const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
    row.className=`leg${s.dash?' ktx':''}${s.kind===N?' none':''}`;
-   row.innerHTML=steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`+nav;
+   row.innerHTML=(steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`)+nav;
   }
   if(card&&s.ll)row.tabIndex=0;
   row.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>e.stopPropagation());
