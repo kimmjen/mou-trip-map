@@ -92,7 +92,16 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 #map img[src*="//nrbe."]{filter:saturate(.45) contrast(.82) brightness(1.08)}
 /* 지도 위 마커 */
 .mk{display:flex;align-items:center;gap:5px;transform:translate(-16px,-38px);white-space:nowrap;cursor:pointer}
-.mk .pin{width:32px;height:32px;flex:none}
+.mk .pin{position:relative;width:32px;height:32px;flex:none}
+.mk .pin::after{content:"";position:absolute;left:50%;top:36px;width:16px;height:6px;margin-left:-8px;border-radius:50%;background:rgba(40,30,20,.22);filter:blur(1px);z-index:-1}
+.mk.on .pin::before{content:"";position:absolute;left:50%;top:38px;width:44px;height:18px;margin:-9px 0 0 -22px;border-radius:50%;border:2.5px solid var(--day);animation:ring 1.5s ease-out infinite;z-index:-1}
+.mk.on .pin b{animation:hop .9s ease-in-out infinite}
+.mk.on{z-index:5;position:relative}
+.mk .halo{position:absolute;left:50%;top:37px;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:var(--day);opacity:.16;z-index:-2}
+.mk.stay .halo{background:var(--stay)}
+.mk.on span{display:none}
+.flag{position:absolute;left:50%;top:-24px;transform:translateX(-50%);font:400 12px/1 var(--cute);text-decoration:none;color:#fff;background:#2b2e3b;padding:5px 8px 4px;border-radius:999px;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.flag::after{content:"";position:absolute;left:50%;bottom:-4px;margin-left:-4px;border:4px solid transparent;border-top-color:#2b2e3b;border-bottom:0}
 .mk b{display:block;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--day);border:3px solid #fff;box-shadow:-2px 3px 6px rgba(0,0,0,.25);box-sizing:border-box}
 .mk b i{display:block;transform:rotate(45deg);font:400 16px/26px var(--cute);font-style:normal;color:#fff;text-align:center}
 .mk.stay b{background:var(--stay)}
@@ -100,10 +109,15 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .veh{font-size:24px;line-height:1;transform:translate(-12px,-14px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));pointer-events:none}
 .veh.east{transform:translate(-12px,-14px) scaleX(-1)}
 #map.far .mk span{display:none}
-.mk span{font:700 12px/1 var(--sans);color:#2b2e3b;background:#fff;padding:6px 9px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.mk span em{font-style:normal;color:var(--day);margin-right:5px}
+.mk span{position:relative;margin-left:4px;font:400 14px/1 var(--cute);color:#2b2e3b;background:#fff;padding:7px 11px 6px;border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.mk span::before{content:"";position:absolute;left:-6px;top:50%;margin-top:-6px;border:6px solid transparent;border-right-color:#fff;border-left:0}
+.mk span em{font:700 11px var(--sans);font-style:normal;color:var(--day);margin-right:5px}
+@keyframes ring{from{transform:scale(.3);opacity:1}to{transform:scale(1.5);opacity:0}}
+@keyframes hop{0%,100%{transform:rotate(-45deg) translate(0,0)}50%{transform:rotate(-45deg) translate(4px,-4px)}}
 .dot{width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid var(--day);box-sizing:border-box;transform:translate(-5px,-5px)}
-.iw{padding:12px 14px;width:260px;background:#fff;color:#2b2e3b;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.2);font:13px/1.55 var(--sans)}
+.iwrap{position:relative;width:0;height:0}
+.iw{position:absolute;left:-130px;top:14px;padding:12px 14px;width:260px;background:#fff;color:#2b2e3b;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.2);font:13px/1.55 var(--sans);animation:rise .25s ease-out both}
+.iw::after{content:"";position:absolute;left:50%;top:-8px;margin-left:-8px;border:8px solid transparent;border-bottom-color:#fff;border-top:0}
 .iw b{display:block;margin-bottom:3px;font:400 16px/1.3 var(--cute);color:var(--day-ink)}
 .mapbar{display:none}
 @media (max-width:760px){
@@ -120,7 +134,8 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
  body.full .panel{display:none}
  html,body{height:auto}
  body{flex-direction:column}
- #map{order:-1;flex:none;position:sticky!important;top:env(safe-area-inset-top,0px);z-index:5;height:40vh;height:40svh;border-bottom:1px solid var(--rule)}
+ #map{order:-1;flex:none;position:sticky!important;top:env(safe-area-inset-top,0px);z-index:5;height:40vh;height:40svh;border-radius:0 0 26px 26px;box-shadow:0 8px 20px rgba(40,50,90,.12)}
+ body.full #map{border-radius:0}
  .panel{width:auto;border-right:0}
  .rail{overflow:visible}
  .top{padding:16px 14px 12px}
@@ -218,12 +233,12 @@ const chipify=t=>esc(t)
 const hasMap=!!window.naver&&!!naver.maps;
 const N_=hasMap?naver.maps:null,P=ll=>new N_.LatLng(ll[0],ll[1]);
 const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matchMedia('(min-width:761px)').matches,scaleControl:false,mapDataControl:false,zoomControlOptions:{position:N_.Position.TOP_RIGHT}}):null;
-const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,-16)}):null;
+const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,0)}):null;
 if(hasMap){const el=document.getElementById('map'),z=()=>el.classList.toggle('far',map.getZoom()<12);N_.Event.addListener(map,'zoom_changed',z);z();}
 const list=document.getElementById('list'),tabs=document.getElementById('tabs'),meta=document.getElementById('meta');
 let day=0,region=null,overlays=[],curM=null,tok=0;
 const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const closeIw=()=>{iw&&iw.close();curM=null;list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));};
+const closeIw=()=>{iw&&iw.close();curM=null;document.querySelectorAll('.mk.on').forEach(e=>e.classList.remove('on'));list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));};
 if(hasMap)N_.Event.addListener(map,'click',closeIw);
 const pills=document.getElementById('pills'),tog=document.getElementById('tog');
 function render(d){
@@ -232,6 +247,7 @@ function render(d){
  const my=++tok;
  // 경로선을 방문 순서대로 한 구간씩 그림
  if(hasMap)for(let i=0;i<pinned.length-1;i++)setTimeout(()=>{if(my!==tok)return;const seg=[P(pinned[i].ll),P(pinned[i+1].ll)];if(!pinned[i].dash)overlays.push(new N_.Polyline({map,path:seg,strokeColor:'#fff',strokeWeight:11,strokeOpacity:1,strokeLineCap:'round'}));overlays.push(new N_.Polyline({map,path:seg,strokeColor:pinned[i].dash?'#9aa0b4':DAYC[d],strokeWeight:pinned[i].dash?3:6,strokeOpacity:1,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));},still?0:250+i*110);
+ const spots=stops.filter(s=>s.ll&&(s.kind===V||s.kind===S)),first=spots[0],last=spots[spots.length-1];
  let n=0,k=0;
  stops.forEach((s,idx)=>{
   const num=s.kind===V?++n:null,lab=num||s.badge||'숙';
@@ -261,11 +277,11 @@ function render(d){
   if(!s.ll||!hasMap)return;
   const big=s.kind===V||s.kind===S;
   const m=new N_.Marker({map,position:P(s.ll),zIndex:big?100:10,icon:{content:big
-   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}" style="--d:${(k++)*80}ms"><div class="pin"><b><i>${lab}</i></b></div><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
+   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}" style="--d:${(k++)*80}ms"><div class="pin"><s class="halo"></s><b><i>${lab}</i></b>${s===first?'<u class="flag">첫 일정</u>':s===last?'<u class="flag">마지막</u>':''}</div><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
    :'<div class="dot"></div>'}});
   overlays.push(m);
-  const html=`<div class="iw"><b>${s.time} · ${esc(s.title)}</b>${esc(s.detail).replace(/\n/g,'<br>')}</div>`;
-  const open=()=>{iw.setContent(html);iw.open(map,m);curM=m;list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));row.classList.add('on');};
+  const html=`<div class="iwrap"><div class="iw"><b>${s.time} · ${esc(s.title)}</b>${esc(s.detail).replace(/\n/g,'<br>')}</div></div>`;
+  const open=()=>{iw.setContent(html);iw.open(map,m);curM=m;document.querySelectorAll('.mk.on').forEach(e=>e.classList.remove('on'));const me=m.getElement().querySelector('.mk');me&&me.classList.add('on');list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));row.classList.add('on');};
   const go=()=>{map.morph(P(s.ll),Math.max(map.getZoom(),15));open();};
   row.onclick=go;if(card)row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
   N_.Event.addListener(m,'click',()=>{if(curM===m&&iw.getMap()){closeIw();return;}open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
