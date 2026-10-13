@@ -48,7 +48,7 @@ h1{margin:8px 0 0;font:400 27px/1.25 var(--cute);letter-spacing:-.01em;text-wrap
 .card+.card{margin-top:12px}
 .card.on{box-shadow:0 0 0 2.5px var(--day),0 8px 20px color-mix(in srgb,var(--day) 25%,transparent)}
 .badge{width:36px;height:36px;border-radius:50%;background:var(--day);color:#fff;font:400 19px/36px var(--cute);text-align:center;box-shadow:0 3px 0 color-mix(in srgb,var(--day) 70%,#000)}
-.card.stay .badge{background:color-mix(in srgb,var(--stay) 18%,var(--sheet));box-shadow:none;font:16px/36px var(--sans)}
+.card.stay .badge{background:var(--stay);box-shadow:0 3px 0 color-mix(in srgb,var(--stay) 70%,#000)}
 .card.unc .badge{outline:2px dashed var(--warn);outline-offset:3px}
 .card.on .badge{animation:pop .35s ease}
 @keyframes pop{40%{transform:scale(1.18) rotate(-6deg)}}
@@ -95,8 +95,7 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .mk .pin{width:32px;height:32px;flex:none}
 .mk b{display:block;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--day);border:3px solid #fff;box-shadow:-2px 3px 6px rgba(0,0,0,.25);box-sizing:border-box}
 .mk b i{display:block;transform:rotate(45deg);font:400 16px/26px var(--cute);font-style:normal;color:#fff;text-align:center}
-.mk.stay b{background:#fff;border-color:var(--stay)}
-.mk.stay b i{font:14px/26px var(--sans)}
+.mk.stay b{background:var(--stay)}
 .mk.unc b{border-style:dashed;border-color:var(--warn)}
 .veh{font-size:24px;line-height:1;transform:translate(-12px,-14px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));pointer-events:none}
 .veh.east{transform:translate(-12px,-14px) scaleX(-1)}
@@ -131,12 +130,10 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}}
 @keyframes drop{0%{opacity:0;transform:translateY(-22px) scale(.5)}60%{opacity:1;transform:translateY(3px) scale(1.12)}80%{transform:translateY(-1px) scale(.97)}}
 @keyframes fade{from{opacity:0}}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-3px) rotate(-4deg)}60%{transform:translateY(0) rotate(3deg)}}
 .card,.leg{animation:rise .5s cubic-bezier(.2,.9,.3,1.15) both;animation-delay:calc(var(--i,0) * 45ms)}
 .mk .pin{animation:drop .55s ease-out both;animation-delay:var(--d,0ms)}
 .mk span{animation:fade .4s both;animation-delay:calc(var(--d,0ms) + 250ms)}
 .dot{animation:fade .4s both}
-h1 .bus{display:inline-block;animation:bob 2.4s ease-in-out infinite;transform-origin:50% 90%}
 .tog:active,.grp button:active{transform:scale(.94)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
@@ -144,20 +141,20 @@ h1 .bus{display:inline-block;animation:bob 2.4s ease-in-out infinite;transform-o
 <body>
 <section class="panel">
  <div class="top">
-  <div><div class="eyebrow">MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정 <span class="bus" aria-hidden="true">🚌</span></h1></div>
+  <div><div class="eyebrow">MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정</h1></div>
   <div class="days" id="tabs"></div>
   <div class="meta" id="meta"></div>
  </div>
  <div class="rail" id="list"></div>
  <div class="legend">
   <span><i class="chip" style="background:var(--day);color:#fff">1</i>방문기관</span>
-  <span><i>🛏</i>숙소 <i>🏫</i>출근지</span>
+  <span><i class="chip" style="background:var(--stay);color:#fff">숙</i>숙소·출근지</span>
   <span><i style="width:10px;height:10px;border-radius:50%;border:2.5px solid var(--day);box-sizing:border-box"></i>환승</span>
   <span>점선 = 위치 추정</span>
  </div>
 </section>
 <div id="map"></div>
-<div class="mapbar"><div class="pills" id="pills"></div><button class="tog" id="tog" type="button">🗺️ 지도 크게</button></div>
+<div class="mapbar"><div class="pills" id="pills"></div><button class="tog" id="tog" type="button">지도 크게</button></div>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=u10c0yzn3f"></script>
 <script>
 const V='V',T='T',S='S',N='N';
@@ -197,7 +194,7 @@ const DAYS=[
  {time:'12:20',title:'용산역 출발 (KTX)',kind:T,region:'seoul',dash:true,ll:[37.5298,126.9646],detail:'KTX 용산 12:20 → 나주 14:13'},
  {time:'14:13',title:'나주역 도착',kind:T,region:'naju',ll:[35.01435,126.71664],detail:''},
  {time:'14:30',title:'자택 방문',kind:N,detail:'환복 및 차량'},
- {time:'15:00',title:'학교 출근 · 한국에너지공과대학교',kind:S,badge:'🏫',region:'naju',ll:[35.01060,126.80332],detail:'나주시 켄텍길 21'},
+ {time:'15:00',title:'학교 출근 · 한국에너지공과대학교',kind:S,badge:'학',region:'naju',ll:[35.01060,126.80332],detail:'나주시 켄텍길 21'},
  {time:'16:00',title:'ELX',kind:V,region:'naju',detail:'30분 소요\n위치 미확인 - 지도에 핀 없음'},
  {time:'17:00',title:'한전 KDN',kind:V,region:'naju',ll:[35.02231,126.78288],detail:'30분 소요\n나주시 빛가람로 661'},
  {time:'17:30',title:'복귀',kind:N,detail:''}
@@ -237,7 +234,7 @@ function render(d){
  if(hasMap)for(let i=0;i<pinned.length-1;i++)setTimeout(()=>{if(my!==tok)return;const seg=[P(pinned[i].ll),P(pinned[i+1].ll)];if(!pinned[i].dash)overlays.push(new N_.Polyline({map,path:seg,strokeColor:'#fff',strokeWeight:11,strokeOpacity:1,strokeLineCap:'round'}));overlays.push(new N_.Polyline({map,path:seg,strokeColor:pinned[i].dash?'#9aa0b4':DAYC[d],strokeWeight:pinned[i].dash?3:6,strokeOpacity:1,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));},still?0:250+i*110);
  let n=0,k=0;
  stops.forEach((s,idx)=>{
-  const num=s.kind===V?++n:null,lab=num||s.badge||'🛏';
+  const num=s.kind===V?++n:null,lab=num||s.badge||'숙';
   const card=s.kind===V||s.kind===S;
   const isEst=l=>/^\*? ?(이동 )?약 ?\d+분|^\* ?\d+분/.test(l);
   const lines=(s.detail||'').split('\n').filter(Boolean);
@@ -304,7 +301,7 @@ function fit(r){
 }
 tog.onclick=()=>{
  const f=document.body.classList.toggle('full');
- tog.textContent=f?'📋 목록 보기':'🗺️ 지도 크게';
+ tog.textContent=f?'목록 보기':'지도 크게';
  scrollTo(0,0);
  if(hasMap){
   // setSize가 #map에 고정 px 크기를 인라인으로 박으므로, 재고 나서 다시 지워 CSS 크기를 따르게 함
