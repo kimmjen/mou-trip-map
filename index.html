@@ -5,108 +5,115 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MOU 서명 출장 지도</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* 레이아웃: 왼쪽은 노선도식 일정 레일, 오른쪽은 지도. 폰에서는 지도 위, 레일 아래. */
+/* 귀여운 출장 지도: 도트 배경 + 둥근 카드, 날짜마다 색(--day)이 바뀜. 폰은 지도 위, 리스트 아래. */
 :root{
- --paper:#f6f7f9;--sheet:#ffffff;--ink:#141a22;--sub:#5b6573;--rule:#e2e5ea;--soft:#eef1f5;
- --route:#2b59c3;--visit:#141a22;--stay:#0f7a55;--warn:#a2470e;--focus:#e8eefc;
- --l1:#0052a4;--l2:#00a84d;--l4:#00a5de;--ktx:#5b6573;
+ --paper:#f5f6fb;--sheet:#ffffff;--ink:#2b2e3b;--sub:#7b8094;--rule:#e7e9f1;--soft:#eef0f8;
+ --day:#f2643d;--stay:#22a86a;--warn:#e8590c;
+ --l1:#0052a4;--l2:#00a84d;--l4:#00a5de;--ktx:#7b8094;
+ --tint:color-mix(in srgb,var(--day) 13%,var(--sheet));
+ --day-ink:color-mix(in srgb,var(--day) 78%,var(--ink));
  --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+ --cute:"Jua",var(--sans);
  --mono:var(--sans);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0f1318;--sheet:#161b22;--ink:#e8ebef;--sub:#9aa4b1;--rule:#262d37;--soft:#1d242d;--route:#7d9cf0;--visit:#e8ebef;--stay:#3fbf8c;--warn:#f0a36b;--focus:#1e2a44;color-scheme:dark}}
-:root[data-theme="dark"]{--paper:#0f1318;--sheet:#161b22;--ink:#e8ebef;--sub:#9aa4b1;--rule:#262d37;--soft:#1d242d;--route:#7d9cf0;--visit:#e8ebef;--stay:#3fbf8c;--warn:#f0a36b;--focus:#1e2a44;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#15171f;--sheet:#1e2130;--ink:#eceefa;--sub:#a4a9c0;--rule:#2d3145;--soft:#262a3d;--stay:#3fd08b;--warn:#ff8a4c;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#15171f;--sheet:#1e2130;--ink:#eceefa;--sub:#a4a9c0;--rule:#2d3145;--soft:#262a3d;--stay:#3fd08b;--warn:#ff8a4c;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{-webkit-tap-highlight-color:transparent;margin:0;font:14px/1.55 var(--sans);font-variant-numeric:tabular-nums;word-break:keep-all;overflow-wrap:anywhere;background:var(--paper);color:var(--ink);display:flex}
-.panel{width:420px;flex:none;display:flex;flex-direction:column;background:var(--sheet);border-right:1px solid var(--rule);min-height:0}
-.top{padding:20px 20px 14px;border-bottom:1px solid var(--rule);display:grid;gap:14px}
-.eyebrow{font:600 12px/1 var(--sans);letter-spacing:.02em;color:var(--sub);text-transform:uppercase}
-h1{margin:4px 0 0;font-size:20px;line-height:1.3;font-weight:700;text-wrap:balance}
-.days{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.days button{all:unset;cursor:pointer;border:1px solid var(--rule);border-radius:10px;padding:8px 10px;display:grid;gap:2px}
-.days button:focus-visible,.views button:focus-visible,.card:focus-visible,summary:focus-visible{outline:2px solid var(--route);outline-offset:2px}
-.days .d1{font:600 11px/1 var(--mono);color:var(--sub);letter-spacing:.04em}
-.days .d2{font-weight:700;font-size:15px}
-.days .d3{font-size:12px;color:var(--sub);text-wrap:balance}
-.days button.on{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
-.days button.on .d1,.days button.on .d3{color:inherit;opacity:.75}
+body{-webkit-tap-highlight-color:transparent;margin:0;font:14px/1.55 var(--sans);font-variant-numeric:tabular-nums;word-break:keep-all;overflow-wrap:anywhere;color:var(--ink);display:flex;
+ background:var(--paper) radial-gradient(var(--rule) 1.2px,transparent 1.6px) 0 0/18px 18px}
+.panel{width:420px;flex:none;display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--rule)}
+.top{padding:22px 18px 14px;display:grid;gap:14px}
+.eyebrow{display:inline-block;font:700 12px/1 var(--sans);color:var(--day-ink);background:var(--tint);padding:7px 11px;border-radius:999px}
+h1{margin:10px 0 0;font:400 27px/1.25 var(--cute);letter-spacing:-.01em;text-wrap:balance}
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.days button{all:unset;cursor:pointer;background:var(--sheet);border-radius:18px;padding:10px 12px;display:grid;gap:3px;box-shadow:0 2px 0 var(--rule),0 6px 16px rgba(40,50,90,.06);transition:transform .15s}
+.days button:active{transform:scale(.97)}
+.days .d1{font:400 13px/1 var(--cute);color:var(--c)}
+.days .d2{font:400 18px/1.2 var(--cute)}
+.days .d3{font-size:11.5px;color:var(--sub);text-wrap:balance}
+.days button.on{background:var(--c);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--c) 70%,#000),0 8px 18px color-mix(in srgb,var(--c) 30%,transparent)}
+.days button.on .d1,.days button.on .d3{color:#fff;opacity:.9}
+.days button:focus-visible,.views button:focus-visible,.card:focus-visible,summary:focus-visible{outline:2px solid var(--day);outline-offset:2px}
 .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--sub)}
-.meta b{color:var(--ink);font-weight:600}
-.views{margin-left:auto;display:flex;background:var(--soft);border-radius:8px;padding:2px}
-.views button{all:unset;cursor:pointer;font-size:13px;padding:8px 14px;border-radius:6px;color:var(--sub)}
-.views button.on{background:var(--sheet);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-.rail{flex:1;overflow:auto;padding:10px 0 24px;position:relative}
-.rail{background:var(--paper)}
-/* 리스트: 방문지·숙소는 카드, 이동은 카드 사이에 접힌 한 줄 */
-.card{margin:0 12px;display:grid;grid-template-columns:30px 1fr;gap:12px;padding:14px 14px 14px 12px;background:var(--sheet);border:1px solid var(--rule);border-radius:14px;cursor:pointer}
-.card+.card{margin-top:10px}
-.card.on{border-color:var(--route);box-shadow:0 0 0 1px var(--route)}
-.badge{width:30px;height:30px;border-radius:50%;background:var(--visit);color:var(--sheet);font:700 14px/30px var(--sans);text-align:center}
-.card.stay .badge{background:var(--stay);color:#fff;font:700 12px/30px var(--sans)}
-.card.unc .badge{outline:2px dashed var(--warn);outline-offset:2px}
+.meta b{color:var(--ink);font-weight:700}
+.views{margin-left:auto;display:flex;background:var(--sheet);border-radius:999px;padding:3px;box-shadow:0 2px 0 var(--rule)}
+.views button{all:unset;cursor:pointer;font:600 13px/1 var(--sans);padding:9px 14px;border-radius:999px;color:var(--sub)}
+.views button.on{background:var(--day);color:#fff}
+.rail{flex:1;overflow:auto;padding:6px 0 24px;position:relative}
+/* 리스트: 방문지·숙소는 카드, 이동은 카드 사이 점선 위의 한 줄 */
+.card{margin:0 14px;display:grid;grid-template-columns:36px 1fr;gap:12px;padding:15px 15px 15px 13px;background:var(--sheet);border-radius:20px;cursor:pointer;box-shadow:0 2px 0 var(--rule),0 8px 20px rgba(40,50,90,.06)}
+.card+.card{margin-top:12px}
+.card.on{box-shadow:0 0 0 2.5px var(--day),0 8px 20px color-mix(in srgb,var(--day) 25%,transparent)}
+.badge{width:36px;height:36px;border-radius:50%;background:var(--day);color:#fff;font:400 19px/36px var(--cute);text-align:center;box-shadow:0 3px 0 color-mix(in srgb,var(--day) 70%,#000)}
+.card.stay .badge{background:color-mix(in srgb,var(--stay) 18%,var(--sheet));box-shadow:none;font:16px/36px var(--sans)}
+.card.unc .badge{outline:2px dashed var(--warn);outline-offset:3px}
+.card.on .badge{animation:pop .35s ease}
+@keyframes pop{40%{transform:scale(1.18) rotate(-6deg)}}
 .cbody{min-width:0}
-.when{font-size:13px;font-weight:600;color:var(--sub);font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.when{font-size:12.5px;font-weight:700;color:var(--sub);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .when .tag{margin:0}
-.name{font-size:17px;font-weight:700;line-height:1.35;margin-top:2px;text-wrap:balance}
-.addr{font-size:13px;color:var(--sub);margin-top:4px}
-.card .nav{margin-top:10px}
-.leg{position:relative;margin:0 12px;padding:2px 0 2px 54px}
-.leg::before{content:"";position:absolute;left:26px;top:0;bottom:0;width:3px;border-radius:2px;background:var(--route);opacity:.35}
-.leg.ktx::before{background:repeating-linear-gradient(var(--sub) 0 5px,transparent 5px 10px);opacity:.7}
-.leg.none::before{background:var(--rule);opacity:1}
+.name{font:400 19px/1.3 var(--cute);margin-top:3px;text-wrap:balance}
+.addr{font-size:13px;color:var(--sub);margin-top:5px}
+.card .nav{margin-top:12px}
+.leg{position:relative;margin:0 14px;padding:4px 0 4px 56px}
+.leg::before{content:"";position:absolute;left:30px;top:0;bottom:0;border-left:3px dotted var(--day);opacity:.55}
+.leg.ktx::before{border-left:3px dashed var(--sub);opacity:.6}
+.leg.none::before{border-left-color:var(--rule);opacity:1}
 .leg summary,.leg .sum{list-style:none;cursor:pointer;padding:8px 0}
 .leg summary::-webkit-details-marker{display:none}
 .l1{display:flex;align-items:baseline;gap:8px;font-size:13.5px}
-.lt{font:600 12.5px var(--mono);color:var(--sub);min-width:40px;font-variant-numeric:tabular-nums}
-.lx{flex:1;min-width:0;font-weight:500}
-.leg.none .lx{color:var(--sub);font-weight:400}
-.leg.on .lx{color:var(--route)}
-.chev{flex:none;width:8px;height:8px;margin:0 4px;border-right:1.5px solid var(--sub);border-bottom:1.5px solid var(--sub);transform:translateY(-2px) rotate(45deg);transition:transform .15s}
+.lt{font-weight:700;font-size:12.5px;color:var(--sub);min-width:40px}
+.lx{flex:1;min-width:0;font-weight:600}
+.leg.none .lx{color:var(--sub);font-weight:500}
+.leg.on .lx{color:var(--day-ink)}
+.chev{flex:none;width:8px;height:8px;margin:0 4px;border-right:2px solid var(--sub);border-bottom:2px solid var(--sub);border-radius:1px;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
 details[open] .chev{transform:translateY(1px) rotate(-135deg)}
-.l2{margin:5px 0 0 48px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
-.le{font-size:12.5px;font-weight:500;color:var(--route);margin-left:3px;font-variant-numeric:tabular-nums}
-.steps{margin:0 0 10px 48px;padding:10px 12px;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;display:grid;gap:8px;font-size:13px;line-height:1.6;color:var(--sub)}
+.l2{margin:6px 0 0 48px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.mode{font-size:15px;line-height:1;margin-right:2px}
+.le{font-size:12px;font-weight:700;color:var(--day-ink);background:var(--tint);padding:3px 9px;border-radius:999px;margin-left:3px}
+.steps{margin:2px 0 10px 48px;padding:12px 14px;background:var(--sheet);border-radius:14px;display:grid;gap:8px;font-size:13px;line-height:1.6;color:var(--sub);box-shadow:0 2px 0 var(--rule)}
 .rail>:first-child{margin-top:4px}
-.tag{display:inline-block;margin-left:6px;font-size:11px;line-height:18px;padding:0 6px;border-radius:4px;vertical-align:1px}
-.tag.dur{background:var(--soft);color:var(--sub)}
-.tag.unc{color:var(--warn);border:1px dashed var(--warn)}
-.chip{display:inline-block;font:600 11.5px/18px var(--mono);padding:0 6px;border-radius:9px;background:var(--ink);color:var(--sheet);margin:0 1px}
+.tag{display:inline-block;margin-left:6px;font-size:11px;line-height:18px;padding:0 7px;border-radius:999px;vertical-align:1px}
+.tag.unc{color:var(--warn);border:1.5px dashed var(--warn)}
+.chip{display:inline-block;font:700 11.5px/19px var(--sans);padding:0 8px;border-radius:999px;background:var(--ink);color:var(--sheet);margin:0 1px}
 .chip.l1{background:var(--l1);color:#fff}.chip.l2{background:var(--l2);color:#fff}.chip.l4{background:var(--l4);color:#fff}
-.chip.ktx{background:transparent;color:var(--ink);border:1.5px solid var(--ktx);line-height:15px}
-.nav{margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:var(--sub)}
-.nav a{text-decoration:none;font-weight:500;font-size:13px;min-height:36px;padding:0 13px;border-radius:18px;border:1px solid var(--rule);color:var(--ink);background:var(--sheet);display:inline-flex;align-items:center;gap:5px}
-.nav a:hover{border-color:var(--sub)}
-.nav a::before{content:"";width:7px;height:7px;border-radius:50%}
-.nav a:focus-visible{outline:2px solid var(--route);outline-offset:2px}
+.chip.ktx{background:transparent;color:var(--ink);border:1.5px solid var(--ktx);line-height:16px}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.nav a{text-decoration:none;font-weight:600;font-size:13px;min-height:36px;padding:0 14px;border-radius:999px;color:var(--ink);background:var(--soft);display:inline-flex;align-items:center;gap:6px}
+.nav a:active{transform:scale(.97)}
+.nav a::before{content:"";width:8px;height:8px;border-radius:50%}
+.nav a:focus-visible{outline:2px solid var(--day);outline-offset:2px}
 .nav .nv::before{background:#03c75a}.nav .kk::before{background:#f2c500}
-.nav span{font:500 12px var(--sans);color:var(--sub);margin-right:2px}
-.legend{padding:10px 20px;border-top:1px solid var(--rule);font-size:12px;color:var(--sub);display:flex;flex-wrap:wrap;gap:6px 14px}
-.legend i{display:inline-block;vertical-align:-2px;margin-right:5px}
+.nav span{font-size:12px;font-weight:600;color:var(--sub);margin-right:2px}
+.legend{padding:12px 18px;font-size:12px;color:var(--sub);display:flex;flex-wrap:wrap;gap:6px 14px}
+.legend i{display:inline-block;vertical-align:-2px;margin-right:5px;font-style:normal}
 #map{flex:1;min-width:0;background:var(--soft)}
 /* 지도 위 마커 */
-.mk{display:flex;align-items:center;gap:6px;transform:translate(-11px,-11px);white-space:nowrap;cursor:pointer}
-.mk b{width:22px;height:22px;border-radius:50%;background:#141a22;color:#fff;font:700 12px/22px var(--sans);text-align:center;box-shadow:0 0 0 2px #fff,0 2px 6px rgba(0,0,0,.35)}
-.mk.stay b{background:#0f7a55;font-size:11px}
-.mk.unc b{box-shadow:0 0 0 2px #fff,0 0 0 4px #a2470e}
+.mk{display:flex;align-items:center;gap:6px;transform:translate(-13px,-13px);white-space:nowrap;cursor:pointer}
+.mk b{width:26px;height:26px;border-radius:50%;background:var(--day);color:#fff;font:400 15px/26px var(--cute);text-align:center;box-shadow:0 0 0 2.5px #fff,0 3px 8px rgba(0,0,0,.3)}
+.mk.stay b{background:#fff;font:14px/26px var(--sans);box-shadow:0 0 0 2.5px var(--stay),0 3px 8px rgba(0,0,0,.3)}
+.mk.unc b{box-shadow:0 0 0 2.5px #fff,0 0 0 5px var(--warn)}
 #map.far .mk span{display:none}
-.mk span{font:600 12px/1 var(--sans);color:#141a22;background:#fff;padding:4px 7px;border-radius:5px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
-.mk span em{font:600 11px var(--sans);font-variant-numeric:tabular-nums;font-style:normal;color:#5b6573;margin-right:5px}
-.dot{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #2b59c3;box-sizing:border-box;transform:translate(-6px,-6px)}
-.iw{padding:10px 12px;width:260px;background:#fff;color:#141a22;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.25);font:13px/1.5 var(--sans)}
-.iw b{display:block;margin-bottom:2px}
+.mk span{font:700 12px/1 var(--sans);color:#2b2e3b;background:#fff;padding:6px 9px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.mk span em{font-style:normal;color:var(--day);margin-right:5px}
+.dot{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--day);box-sizing:border-box;transform:translate(-6px,-6px)}
+.iw{padding:12px 14px;width:260px;background:#fff;color:#2b2e3b;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.2);font:13px/1.55 var(--sans)}
+.iw b{display:block;margin-bottom:3px;font:400 16px/1.3 var(--cute);color:var(--day-ink)}
 .mapbar{display:none}
 @media (max-width:760px){
  .mapbar{display:flex;position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;right:10px;z-index:20;gap:6px;align-items:flex-start;pointer-events:none}
  .mapbar>*{pointer-events:auto}
  .mapbar .pills{display:none;flex-wrap:wrap;gap:6px}
  body.full .mapbar .pills{display:flex}
- .mapbar .grp{display:flex;gap:4px;background:rgba(255,255,255,.96);border-radius:20px;padding:3px;box-shadow:0 1px 6px rgba(0,0,0,.2)}
- .mapbar button{all:unset;pointer-events:auto;cursor:pointer;font:600 13px/1 var(--sans);font-variant-numeric:tabular-nums;padding:10px 12px;border-radius:17px;color:#141a22}
- .mapbar .grp button.on{background:#141a22;color:#fff}
- .mapbar .tog{margin-left:auto;white-space:nowrap;flex:none;background:rgba(255,255,255,.96);box-shadow:0 1px 6px rgba(0,0,0,.2);padding:12px 14px;border-radius:20px}
- .mapbar button:focus-visible{outline:2px solid #2b59c3;outline-offset:2px}
+ .mapbar .grp{display:flex;gap:2px;background:rgba(255,255,255,.96);border-radius:999px;padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+ .mapbar button{all:unset;pointer-events:auto;cursor:pointer;font:700 13px/1 var(--sans);padding:10px 12px;border-radius:999px;color:#2b2e3b}
+ .mapbar .grp button.on{background:var(--day);color:#fff}
+ .mapbar .tog{margin-left:auto;white-space:nowrap;flex:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:12px 15px}
+ .mapbar button:focus-visible{outline:2px solid var(--day);outline-offset:2px}
  body.full #map{height:100vh;height:100svh}
  body.full .panel{display:none}
  html,body{height:auto}
@@ -114,29 +121,40 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
  #map{order:-1;flex:none;position:sticky!important;top:env(safe-area-inset-top,0px);z-index:5;height:40vh;height:40svh;border-bottom:1px solid var(--rule)}
  .panel{width:auto;border-right:0}
  .rail{overflow:visible}
- .top{padding:14px 16px 12px}
- .legend{padding-inline:16px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+ .top{padding:16px 14px 12px}
+ .legend{padding-inline:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 }
-@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+/* 애니메이션: 리스트 차례로 떠오르기, 핀 떨어지기, 제목 버스 흔들기 */
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+@keyframes drop{0%{opacity:0;transform:translateY(-22px) scale(.5)}60%{opacity:1;transform:translateY(3px) scale(1.12)}80%{transform:translateY(-1px) scale(.97)}}
+@keyframes fade{from{opacity:0}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-3px) rotate(-4deg)}60%{transform:translateY(0) rotate(3deg)}}
+.card,.leg{animation:rise .5s cubic-bezier(.2,.9,.3,1.15) both;animation-delay:calc(var(--i,0) * 45ms)}
+.mk b{animation:drop .55s ease-out both;animation-delay:var(--d,0ms)}
+.mk span{animation:fade .4s both;animation-delay:calc(var(--d,0ms) + 250ms)}
+.dot{animation:fade .4s both}
+h1 .bus{display:inline-block;animation:bob 2.4s ease-in-out infinite;transform-origin:50% 90%}
+.tog:active,.grp button:active{transform:scale(.94)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <section class="panel">
  <div class="top">
-  <div><div class="eyebrow">MOU 협약서 서명 · 2026</div><h1>판교 · 서울 · 광명 · 나주 순회 일정</h1></div>
+  <div><div class="eyebrow">🤝 MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정 <span class="bus" aria-hidden="true">🚌</span></h1></div>
   <div class="days" id="tabs"></div>
   <div class="meta" id="meta"></div>
  </div>
  <div class="rail" id="list"></div>
  <div class="legend">
-  <span><i class="chip" style="padding:0 5px">1</i>방문기관</span>
-  <span><i class="chip" style="background:var(--stay);padding:0 5px">숙</i>숙소·출근지</span>
-  <span><i style="display:inline-block;margin:0 5px 0 0;width:10px;height:10px;border-radius:50%;border:2px solid var(--route);box-sizing:border-box"></i>환승</span>
+  <span><i class="chip" style="background:var(--day);color:#fff">1</i>방문기관</span>
+  <span><i>🛏</i>숙소 <i>🏫</i>출근지</span>
+  <span><i style="width:10px;height:10px;border-radius:50%;border:2.5px solid var(--day);box-sizing:border-box"></i>환승</span>
   <span>점선 테두리 = 위치 추정 · 경로선은 직선 개략</span>
  </div>
 </section>
 <div id="map"></div>
-<div class="mapbar"><div class="pills" id="pills"></div><button class="tog" id="tog" type="button">지도 크게</button></div>
+<div class="mapbar"><div class="pills" id="pills"></div><button class="tog" id="tog" type="button">🗺️ 지도 크게</button></div>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=u10c0yzn3f"></script>
 <script>
 const V='V',T='T',S='S',N='N';
@@ -176,7 +194,7 @@ const DAYS=[
  {time:'12:20',title:'용산역 출발 (KTX)',kind:T,region:'seoul',dash:true,ll:[37.5298,126.9646],detail:'KTX 용산 12:20 → 나주 14:13'},
  {time:'14:13',title:'나주역 도착',kind:T,region:'naju',ll:[35.01435,126.71664],detail:''},
  {time:'14:30',title:'자택 방문',kind:N,detail:'환복 및 차량'},
- {time:'15:00',title:'학교 출근 · 한국에너지공과대학교',kind:S,badge:'학',region:'naju',ll:[35.01060,126.80332],detail:'나주시 켄텍길 21'},
+ {time:'15:00',title:'학교 출근 · 한국에너지공과대학교',kind:S,badge:'🏫',region:'naju',ll:[35.01060,126.80332],detail:'나주시 켄텍길 21'},
  {time:'16:00',title:'ELX',kind:V,region:'naju',detail:'30분 소요\n위치 미확인 - 지도에 핀 없음'},
  {time:'17:00',title:'한전 KDN',kind:V,region:'naju',ll:[35.02231,126.78288],detail:'30분 소요\n나주시 빛가람로 661'},
  {time:'17:30',title:'복귀',kind:N,detail:''}
@@ -187,6 +205,7 @@ const place=s=>/KTX|역 도착/.test(s.title)?s.title.split(' ')[0]:s.title.repl
 {let prev=null;DAYS.forEach(D=>D.stops.forEach(s=>{if(!s.ll||!(s.kind===V||s.kind===S||/KTX|역 도착/.test(s.title)))return;if(prev&&!prev.dash)s.from=prev;prev=s;}));}
 const naverUrl=(a,b)=>`nmap://route/public?slat=${a.ll[0]}&slng=${a.ll[1]}&sname=${encodeURIComponent(place(a))}&dlat=${b.ll[0]}&dlng=${b.ll[1]}&dname=${encodeURIComponent(place(b))}&appname=${encodeURIComponent(location.origin)}`;
 const kakaoUrl=(a,b)=>`https://map.kakao.com/link/by/traffic/${encodeURIComponent(place(a))},${a.ll[0]},${a.ll[1]}/${encodeURIComponent(place(b))},${b.ll[0]},${b.ll[1]}`;
+const DAYC=['#f2643d','#12a594','#7c5cf0'];
 const DATES=[['10.19','월','판교 · 하남 · 관악 · 광명'],['10.20','화','안양 · 성북 · 성수'],['10.21','수','신촌 · 용산 · 나주']];
 const LINE={'1':'l1','2':'l2','4':'l4'};
 const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
@@ -202,17 +221,20 @@ const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matc
 const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,-16)}):null;
 if(hasMap){const el=document.getElementById('map'),z=()=>el.classList.toggle('far',map.getZoom()<12);N_.Event.addListener(map,'zoom_changed',z);z();}
 const list=document.getElementById('list'),tabs=document.getElementById('tabs'),meta=document.getElementById('meta');
-let day=0,region=null,overlays=[],curM=null;
+let day=0,region=null,overlays=[],curM=null,tok=0;
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const closeIw=()=>{iw&&iw.close();curM=null;list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));};
 if(hasMap)N_.Event.addListener(map,'click',closeIw);
 const pills=document.getElementById('pills'),tog=document.getElementById('tog');
 function render(d){
- day=d;overlays.forEach(o=>o.setMap(null));overlays=[];closeIw();list.innerHTML='';
+ day=d;document.documentElement.style.setProperty('--day',DAYC[d]);overlays.forEach(o=>o.setMap(null));overlays=[];closeIw();list.innerHTML='';
  const stops=DAYS[d].stops,pinned=stops.filter(s=>s.ll);
- if(hasMap)for(let i=0;i<pinned.length-1;i++)overlays.push(new N_.Polyline({map,path:[P(pinned[i].ll),P(pinned[i+1].ll)],strokeColor:pinned[i].dash?'#5b6573':'#2b59c3',strokeWeight:pinned[i].dash?3:4,strokeOpacity:.8,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));
- let n=0;
- stops.forEach(s=>{
-  const num=s.kind===V?++n:null,lab=num||s.badge||'숙';
+ const my=++tok;
+ // 경로선을 방문 순서대로 한 구간씩 그림
+ if(hasMap)for(let i=0;i<pinned.length-1;i++)setTimeout(()=>{if(my!==tok)return;overlays.push(new N_.Polyline({map,path:[P(pinned[i].ll),P(pinned[i+1].ll)],strokeColor:pinned[i].dash?'#7b8094':DAYC[d],strokeWeight:pinned[i].dash?3:5,strokeOpacity:.85,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));},still?0:250+i*110);
+ let n=0,k=0;
+ stops.forEach((s,idx)=>{
+  const num=s.kind===V?++n:null,lab=num||s.badge||'🛏';
   const card=s.kind===V||s.kind===S;
   const isEst=l=>/^\*? ?(이동 )?약 ?\d+분|^\* ?\d+분/.test(l);
   const lines=(s.detail||'').split('\n').filter(Boolean);
@@ -221,12 +243,14 @@ function render(d){
   const steps=lines.filter(l=>!isEst(l));
   const nav=s.from?`<div class="nav"><span>길찾기</span><a class="nv" href="${naverUrl(s.from,s)}" title="${esc(place(s.from))}에서 출발">네이버 지도</a><a class="kk" href="${kakaoUrl(s.from,s)}" target="_blank" rel="noopener" title="${esc(place(s.from))}에서 출발">카카오맵</a></div>`:'';
   const row=document.createElement('div');
+  row.style.setProperty('--i',idx);
   if(card){
    row.className=`card${s.kind===S?' stay':''}${s.unc?' unc':''}`;
    row.innerHTML=`<div class="badge">${lab}</div><div class="cbody"><div class="when">${s.time}${dur?` · ${dur}`:''}${s.unc?'<span class="tag unc">위치 추정</span>':''}</div><div class="name">${esc(s.title)}</div>${steps.map(l=>`<div class="addr">${chipify(l)}</div>`).join('')}${nav}</div>`;
   }else{
    const chips=[...new Set((chipify(steps.join(' ')).match(/<span class="chip[^"]*">[^<]*<\/span>/g)||[]))].join('');
-   const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
+   const all=steps.join(' ')+s.title,mode=[/KTX/.test(all)&&'🚄',/호선|역 승차/.test(all)&&'🚇',/번/.test(all)&&'🚌'].filter(Boolean).join('')||(s.kind===N&&/도보/.test(s.detail)?'🚶':'');
+   const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${mode?`<span class="mode">${mode}</span>`:''}${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
    row.className=`leg${s.dash?' ktx':''}${s.kind===N?' none':''}`;
    row.innerHTML=steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`;
   }
@@ -238,7 +262,7 @@ function render(d){
   if(!s.ll||!hasMap)return;
   const big=s.kind===V||s.kind===S;
   const m=new N_.Marker({map,position:P(s.ll),zIndex:big?100:10,icon:{content:big
-   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}"><b>${lab}</b><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
+   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}" style="--d:${(k++)*80}ms"><b>${lab}</b><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
    :'<div class="dot"></div>'}});
   overlays.push(m);
   const html=`<div class="iw"><b>${s.time} · ${esc(s.title)}</b>${esc(s.detail).replace(/\n/g,'<br>')}</div>`;
@@ -247,7 +271,7 @@ function render(d){
   row.onclick=go;if(card)row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
   N_.Event.addListener(m,'click',()=>{if(curM===m&&iw.getMap()){closeIw();return;}open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
  });
- tabs.innerHTML=DAYS.map((x,i)=>`<button class="${i===d?'on':''}" onclick="render(${i})"><span class="d1">DAY ${i+1}</span><span class="d2">${DATES[i][0]} (${DATES[i][1]})</span><span class="d3">${DATES[i][2]}</span></button>`).join('');
+ tabs.innerHTML=DAYS.map((x,i)=>`<button class="${i===d?'on':''}" style="--c:${DAYC[i]}" onclick="render(${i})"><span class="d1">DAY ${i+1}</span><span class="d2">${DATES[i][0]} (${DATES[i][1]})</span><span class="d3">${DATES[i][2]}</span></button>`).join('');
  const visits=stops.filter(s=>s.kind===V).length,times=stops.map(s=>s.time).filter(t=>/^\d/.test(t));
  const regions=[...new Set(pinned.map(s=>s.region))].sort((a,b)=>(a==='seoul'?-1:1)-(b==='seoul'?-1:1));
  meta.innerHTML=`<span>방문 <b>${visits}곳</b></span><span><b>${times[0]}</b> – <b>${times[times.length-1]}</b></span>`+
@@ -267,9 +291,12 @@ function fit(r){
 }
 tog.onclick=()=>{
  const f=document.body.classList.toggle('full');
- tog.textContent=f?'목록 보기':'지도 크게';
+ tog.textContent=f?'📋 목록 보기':'🗺️ 지도 크게';
  scrollTo(0,0);
- if(hasMap){const el=document.getElementById('map');map.setSize(new N_.Size(el.offsetWidth,el.offsetHeight));fit(region);}
+ if(hasMap){
+  // setSize가 #map에 고정 px 크기를 인라인으로 박으므로, 재고 나서 다시 지워 CSS 크기를 따르게 함
+  const el=document.getElementById('map');el.style.width=el.style.height='';
+  map.setSize(new N_.Size(el.offsetWidth,el.offsetHeight));el.style.width=el.style.height='';fit(region);}
 };
 render(Math.max(0,['2026-10-19','2026-10-20','2026-10-21'].indexOf(new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Seoul'}))));
 </script>
