@@ -97,7 +97,19 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .dot{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #2b59c3;box-sizing:border-box;transform:translate(-6px,-6px)}
 .iw{padding:10px 12px;width:260px;background:#fff;color:#141a22;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.25);font:13px/1.5 "IBM Plex Sans KR",sans-serif}
 .iw b{display:block;margin-bottom:2px}
+.mapbar{display:none}
 @media (max-width:760px){
+ .mapbar{display:flex;position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;right:10px;z-index:20;gap:6px;align-items:flex-start;pointer-events:none}
+ .mapbar>*{pointer-events:auto}
+ .mapbar .pills{display:none;flex-wrap:wrap;gap:6px}
+ body.full .mapbar .pills{display:flex}
+ .mapbar .grp{display:flex;gap:4px;background:rgba(255,255,255,.96);border-radius:20px;padding:3px;box-shadow:0 1px 6px rgba(0,0,0,.2)}
+ .mapbar button{all:unset;cursor:pointer;font:600 13px/1 var(--sans);font-variant-numeric:tabular-nums;padding:10px 12px;border-radius:17px;color:#141a22}
+ .mapbar .grp button.on{background:#141a22;color:#fff}
+ .mapbar .tog{margin-left:auto;white-space:nowrap;flex:none;background:rgba(255,255,255,.96);box-shadow:0 1px 6px rgba(0,0,0,.2);padding:12px 14px;border-radius:20px}
+ .mapbar button:focus-visible{outline:2px solid #2b59c3;outline-offset:2px}
+ body.full #map{height:100vh;height:100svh}
+ body.full .panel{display:none}
  html,body{height:auto}
  body{flex-direction:column}
  #map{order:-1;flex:none;position:sticky!important;top:env(safe-area-inset-top,0px);z-index:5;height:40vh;height:40svh;border-bottom:1px solid var(--rule)}
@@ -125,6 +137,7 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
  </div>
 </section>
 <div id="map"></div>
+<div class="mapbar"><div class="pills" id="pills"></div><button class="tog" id="tog" type="button">지도 크게</button></div>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=u10c0yzn3f"></script>
 <script>
 const V='V',T='T',S='S',N='N';
@@ -190,7 +203,8 @@ const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matc
 const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,-16)}):null;
 if(hasMap){const el=document.getElementById('map'),z=()=>el.classList.toggle('far',map.getZoom()<12);N_.Event.addListener(map,'zoom_changed',z);z();}
 const list=document.getElementById('list'),tabs=document.getElementById('tabs'),meta=document.getElementById('meta');
-let day=0,overlays=[];
+let day=0,region=null,overlays=[];
+const pills=document.getElementById('pills'),tog=document.getElementById('tog');
 function render(d){
  day=d;overlays.forEach(o=>o.setMap(null));overlays=[];iw&&iw.close();list.innerHTML='';
  const stops=DAYS[d].stops,pinned=stops.filter(s=>s.ll);
@@ -217,6 +231,8 @@ function render(d){
   }
   if(card&&s.ll)row.tabIndex=0;
   row.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>e.stopPropagation());
+  const det=row.querySelector('details');
+  if(det)det.querySelector('summary').onclick=e=>{e.preventDefault();det.open=!det.open;};
   list.appendChild(row);
   if(!s.ll||!hasMap)return;
   const big=s.kind===V||s.kind===S;
@@ -234,16 +250,26 @@ function render(d){
  const visits=stops.filter(s=>s.kind===V).length,times=stops.map(s=>s.time).filter(t=>/^\d/.test(t));
  const regions=[...new Set(pinned.map(s=>s.region))].sort((a,b)=>(a==='seoul'?-1:1)-(b==='seoul'?-1:1));
  meta.innerHTML=`<span>방문 <b>${visits}곳</b></span><span><b>${times[0]}</b> – <b>${times[times.length-1]}</b></span>`+
-  (regions.length>1?`<div class="views" id="views">${regions.map((r,i)=>`<button class="${i===0?'on':''}" onclick="fit('${r}',this)">${REGION[r]}</button>`).join('')}</div>`:'');
+  (regions.length>1?`<div class="views" id="views">${regions.map((r,i)=>`<button data-r="${r}" onclick="fit('${r}')">${REGION[r]}</button>`).join('')}</div>`:'');
  fit(regions[0]);
 }
-function fit(region,btn){
- if(btn){[...btn.parentNode.children].forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function fit(r){
+ region=r;
+ const regs=[...new Set(DAYS[day].stops.filter(s=>s.ll).map(s=>s.region))].sort((a,b)=>(a==='seoul'?-1:1)-(b==='seoul'?-1:1));
+ document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.r===r));
+ pills.innerHTML=`<span class="grp">${DATES.map((x,i)=>`<button class="${i===day?'on':''}" onclick="render(${i})">${x[0]}</button>`).join('')}</span>`+
+  (regs.length>1?`<span class="grp">${regs.map(x=>`<button class="${x===r?'on':''}" onclick="fit('${x}')">${REGION[x]}</button>`).join('')}</span>`:'');
  if(!hasMap)return;
- const pts=DAYS[day].stops.filter(s=>s.ll&&s.region===region).map(s=>P(s.ll));
+ const pts=DAYS[day].stops.filter(s=>s.ll&&s.region===r).map(s=>P(s.ll));
  const b=new N_.LatLngBounds(pts[0],pts[0]);pts.forEach(p=>b.extend(p));
  map.fitBounds(b,{top:60,right:60,bottom:40,left:40});
 }
+tog.onclick=()=>{
+ const f=document.body.classList.toggle('full');
+ tog.textContent=f?'목록 보기':'지도 크게';
+ scrollTo(0,0);
+ if(hasMap){const el=document.getElementById('map');map.setSize(new N_.Size(el.offsetWidth,el.offsetHeight));fit(region);}
+};
 render(Math.max(0,['2026-10-19','2026-10-20','2026-10-21'].indexOf(new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Seoul'}))));
 </script>
 </body>
