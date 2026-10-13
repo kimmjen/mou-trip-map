@@ -151,6 +151,16 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .mk span{animation:fade .4s both;animation-delay:calc(var(--d,0ms) + 250ms)}
 .dot{animation:fade .4s both}
 .tog:active,.grp button:active{transform:scale(.94)}
+.locbtn{all:unset;cursor:pointer;width:44px;height:44px;margin:0 10px 14px 0;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);display:grid;place-items:center;color:#2b2e3b}
+.locbtn.on{color:#2f7cf6}
+.locbtn.busy svg{animation:spin 1s linear infinite}
+.locbtn:focus-visible{outline:2px solid #2f7cf6;outline-offset:2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.me{position:relative;width:18px;height:18px;transform:translate(-9px,-9px)}
+.me i{position:absolute;inset:0;border-radius:50%;background:#2f7cf6;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.me::before{content:"";position:absolute;inset:-12px;border-radius:50%;background:#2f7cf6;opacity:.25;animation:mepulse 2s ease-out infinite}
+@keyframes mepulse{from{transform:scale(.4);opacity:.45}to{transform:scale(1.4);opacity:0}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;background:#2b2e3b;color:#fff;font:600 13px/1.4 var(--sans);padding:10px 16px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:calc(100% - 32px);text-align:center}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -316,6 +326,28 @@ function fit(r){
  const b=new N_.LatLngBounds(pts[0],pts[0]);pts.forEach(p=>b.extend(p));
  map.fitBounds(b,{top:70,right:130,bottom:40,left:40});
 }
+// 내 위치: 버튼을 누르면 권한을 묻고, 파란 점으로 표시한 뒤 계속 따라감
+let meM=null,watchId=null,firstFix=false;
+const toast=msg=>{const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);};
+if(hasMap)N_.Event.once(map,'init',()=>{
+ const ctl=new N_.CustomControl('<button class="locbtn" type="button" aria-label="내 위치 보기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg></button>',{position:N_.Position.RIGHT_BOTTOM});
+ ctl.setMap(map);
+ const btn=ctl.getElement().querySelector('.locbtn');
+ N_.Event.addDOMListener(btn,'click',()=>{
+  if(meM&&watchId!==null){map.morph(meM.getPosition(),Math.max(map.getZoom(),15));return;}
+  if(!navigator.geolocation){toast('이 브라우저는 위치 찾기를 지원하지 않아요');return;}
+  btn.classList.add('busy');firstFix=true;
+  watchId=navigator.geolocation.watchPosition(p=>{
+   const ll=new N_.LatLng(p.coords.latitude,p.coords.longitude);
+   if(!meM)meM=new N_.Marker({map,position:ll,zIndex:300,clickable:false,icon:{content:'<div class="me"><i></i></div>'}});else meM.setPosition(ll);
+   btn.classList.remove('busy');btn.classList.add('on');
+   if(firstFix){firstFix=false;map.morph(ll,Math.max(map.getZoom(),15));}
+  },e=>{
+   btn.classList.remove('busy','on');if(watchId!==null)navigator.geolocation.clearWatch(watchId);watchId=null;
+   toast(e.code===1?'위치 권한을 허용해 주세요 (설정 > Safari > 위치)':'지금 위치를 찾을 수 없어요. 잠시 후 다시 눌러 주세요');
+  },{enableHighAccuracy:true,maximumAge:10000,timeout:15000});
+ });
+});
 tog.onclick=()=>{
  const f=document.body.classList.toggle('full');
  tog.textContent=f?'목록 보기':'지도 크게';
