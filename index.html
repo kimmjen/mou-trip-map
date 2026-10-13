@@ -23,19 +23,18 @@
 :root[data-theme="dark"]{--paper:#15171f;--sheet:#1e2130;--ink:#eceefa;--sub:#a4a9c0;--rule:#2d3145;--soft:#262a3d;--stay:#3fd08b;--warn:#ff8a4c;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{-webkit-tap-highlight-color:transparent;margin:0;font:14px/1.55 var(--sans);font-variant-numeric:tabular-nums;word-break:keep-all;overflow-wrap:anywhere;color:var(--ink);display:flex;
- background:var(--paper) radial-gradient(var(--rule) 1.2px,transparent 1.6px) 0 0/18px 18px}
+body{-webkit-tap-highlight-color:transparent;margin:0;font:14px/1.55 var(--sans);font-variant-numeric:tabular-nums;word-break:keep-all;overflow-wrap:anywhere;color:var(--ink);display:flex;background:var(--paper)}
 .panel{width:420px;flex:none;display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--rule)}
 .top{padding:22px 18px 14px;display:grid;gap:14px}
-.eyebrow{display:inline-block;font:700 12px/1 var(--sans);color:var(--day-ink);background:var(--tint);padding:7px 11px;border-radius:999px}
-h1{margin:10px 0 0;font:400 27px/1.25 var(--cute);letter-spacing:-.01em;text-wrap:balance}
+.eyebrow{font:600 13px/1 var(--sans);color:var(--sub)}
+h1{margin:8px 0 0;font:400 27px/1.25 var(--cute);letter-spacing:-.01em;text-wrap:balance}
 .days{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.days button{all:unset;cursor:pointer;background:var(--sheet);border-radius:18px;padding:10px 12px;display:grid;gap:3px;box-shadow:0 2px 0 var(--rule),0 6px 16px rgba(40,50,90,.06);transition:transform .15s}
+.days button{all:unset;cursor:pointer;background:var(--sheet);border-radius:18px;padding:10px 12px;display:grid;gap:3px;box-shadow:0 1px 0 var(--rule);transition:transform .15s}
 .days button:active{transform:scale(.97)}
 .days .d1{font:400 13px/1 var(--cute);color:var(--c)}
 .days .d2{font:400 18px/1.2 var(--cute)}
 .days .d3{font-size:11.5px;color:var(--sub);text-wrap:balance}
-.days button.on{background:var(--c);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--c) 70%,#000),0 8px 18px color-mix(in srgb,var(--c) 30%,transparent)}
+.days button.on{background:var(--c);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--c) 70%,#000)}
 .days button.on .d1,.days button.on .d3{color:#fff;opacity:.9}
 .days button:focus-visible,.views button:focus-visible,.card:focus-visible,summary:focus-visible{outline:2px solid var(--day);outline-offset:2px}
 .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--sub)}
@@ -45,7 +44,7 @@ h1{margin:10px 0 0;font:400 27px/1.25 var(--cute);letter-spacing:-.01em;text-wra
 .views button.on{background:var(--day);color:#fff}
 .rail{flex:1;overflow:auto;padding:6px 0 24px;position:relative}
 /* 리스트: 방문지·숙소는 카드, 이동은 카드 사이 점선 위의 한 줄 */
-.card{margin:0 14px;display:grid;grid-template-columns:36px 1fr;gap:12px;padding:15px 15px 15px 13px;background:var(--sheet);border-radius:20px;cursor:pointer;box-shadow:0 2px 0 var(--rule),0 8px 20px rgba(40,50,90,.06)}
+.card{margin:0 14px;display:grid;grid-template-columns:36px 1fr;gap:12px;padding:15px 15px 15px 13px;background:var(--sheet);border-radius:20px;cursor:pointer;box-shadow:0 1px 0 var(--rule)}
 .card+.card{margin-top:12px}
 .card.on{box-shadow:0 0 0 2.5px var(--day),0 8px 20px color-mix(in srgb,var(--day) 25%,transparent)}
 .badge{width:36px;height:36px;border-radius:50%;background:var(--day);color:#fff;font:400 19px/36px var(--cute);text-align:center;box-shadow:0 3px 0 color-mix(in srgb,var(--day) 70%,#000)}
@@ -73,7 +72,6 @@ h1{margin:10px 0 0;font:400 27px/1.25 var(--cute);letter-spacing:-.01em;text-wra
 .chev{flex:none;width:8px;height:8px;margin:0 4px;border-right:2px solid var(--sub);border-bottom:2px solid var(--sub);border-radius:1px;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
 details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .l2{margin:6px 0 0 48px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
-.mode{font-size:15px;line-height:1;margin-right:2px}
 .le{font-size:12px;font-weight:700;color:var(--day-ink);background:var(--tint);padding:3px 9px;border-radius:999px;margin-left:3px}
 .steps{margin:2px 0 10px 48px;padding:12px 14px;background:var(--sheet);border-radius:14px;display:grid;gap:8px;font-size:13px;line-height:1.6;color:var(--sub);box-shadow:0 2px 0 var(--rule)}
 .rail>:first-child{margin-top:4px}
@@ -88,19 +86,24 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .nav a::before{content:"";width:8px;height:8px;border-radius:50%}
 .nav a:focus-visible{outline:2px solid var(--day);outline-offset:2px}
 .nav .nv::before{background:#03c75a}.nav .kk::before{background:#f2c500}
-.nav span{font-size:12px;font-weight:600;color:var(--sub);margin-right:2px}
 .legend{padding:12px 18px;font-size:12px;color:var(--sub);display:flex;flex-wrap:wrap;gap:6px 14px}
 .legend i{display:inline-block;vertical-align:-2px;margin-right:5px;font-style:normal}
-#map{flex:1;min-width:0;background:var(--soft)}
+#map{flex:1;min-width:0;background:#f3f1ec}
+#map img[src*="//nrbe."]{filter:saturate(.45) contrast(.82) brightness(1.08)}
 /* 지도 위 마커 */
-.mk{display:flex;align-items:center;gap:6px;transform:translate(-13px,-13px);white-space:nowrap;cursor:pointer}
-.mk b{width:26px;height:26px;border-radius:50%;background:var(--day);color:#fff;font:400 15px/26px var(--cute);text-align:center;box-shadow:0 0 0 2.5px #fff,0 3px 8px rgba(0,0,0,.3)}
-.mk.stay b{background:#fff;font:14px/26px var(--sans);box-shadow:0 0 0 2.5px var(--stay),0 3px 8px rgba(0,0,0,.3)}
-.mk.unc b{box-shadow:0 0 0 2.5px #fff,0 0 0 5px var(--warn)}
+.mk{display:flex;align-items:center;gap:5px;transform:translate(-16px,-38px);white-space:nowrap;cursor:pointer}
+.mk .pin{width:32px;height:32px;flex:none}
+.mk b{display:block;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--day);border:3px solid #fff;box-shadow:-2px 3px 6px rgba(0,0,0,.25);box-sizing:border-box}
+.mk b i{display:block;transform:rotate(45deg);font:400 16px/26px var(--cute);font-style:normal;color:#fff;text-align:center}
+.mk.stay b{background:#fff;border-color:var(--stay)}
+.mk.stay b i{font:14px/26px var(--sans)}
+.mk.unc b{border-style:dashed;border-color:var(--warn)}
+.veh{font-size:24px;line-height:1;transform:translate(-12px,-14px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));pointer-events:none}
+.veh.east{transform:translate(-12px,-14px) scaleX(-1)}
 #map.far .mk span{display:none}
 .mk span{font:700 12px/1 var(--sans);color:#2b2e3b;background:#fff;padding:6px 9px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .mk span em{font-style:normal;color:var(--day);margin-right:5px}
-.dot{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--day);box-sizing:border-box;transform:translate(-6px,-6px)}
+.dot{width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid var(--day);box-sizing:border-box;transform:translate(-5px,-5px)}
 .iw{padding:12px 14px;width:260px;background:#fff;color:#2b2e3b;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.2);font:13px/1.55 var(--sans)}
 .iw b{display:block;margin-bottom:3px;font:400 16px/1.3 var(--cute);color:var(--day-ink)}
 .mapbar{display:none}
@@ -130,7 +133,7 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 @keyframes fade{from{opacity:0}}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-3px) rotate(-4deg)}60%{transform:translateY(0) rotate(3deg)}}
 .card,.leg{animation:rise .5s cubic-bezier(.2,.9,.3,1.15) both;animation-delay:calc(var(--i,0) * 45ms)}
-.mk b{animation:drop .55s ease-out both;animation-delay:var(--d,0ms)}
+.mk .pin{animation:drop .55s ease-out both;animation-delay:var(--d,0ms)}
 .mk span{animation:fade .4s both;animation-delay:calc(var(--d,0ms) + 250ms)}
 .dot{animation:fade .4s both}
 h1 .bus{display:inline-block;animation:bob 2.4s ease-in-out infinite;transform-origin:50% 90%}
@@ -141,7 +144,7 @@ h1 .bus{display:inline-block;animation:bob 2.4s ease-in-out infinite;transform-o
 <body>
 <section class="panel">
  <div class="top">
-  <div><div class="eyebrow">🤝 MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정 <span class="bus" aria-hidden="true">🚌</span></h1></div>
+  <div><div class="eyebrow">MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정 <span class="bus" aria-hidden="true">🚌</span></h1></div>
   <div class="days" id="tabs"></div>
   <div class="meta" id="meta"></div>
  </div>
@@ -150,7 +153,7 @@ h1 .bus{display:inline-block;animation:bob 2.4s ease-in-out infinite;transform-o
   <span><i class="chip" style="background:var(--day);color:#fff">1</i>방문기관</span>
   <span><i>🛏</i>숙소 <i>🏫</i>출근지</span>
   <span><i style="width:10px;height:10px;border-radius:50%;border:2.5px solid var(--day);box-sizing:border-box"></i>환승</span>
-  <span>점선 테두리 = 위치 추정 · 경로선은 직선 개략</span>
+  <span>점선 = 위치 추정</span>
  </div>
 </section>
 <div id="map"></div>
@@ -211,13 +214,13 @@ const LINE={'1':'l1','2':'l2','4':'l4'};
 const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 // 상세 문구 속 버스·지하철·KTX 표기를 칩으로
 const chipify=t=>esc(t)
- .replace(/((?:\d{1,4}(?:-\d{1,2})?)(?:, \d{1,4}(?:-\d{1,2})?)*)번/g,(_,g)=>g.split(', ').map(n=>`<span class="chip">${n}</span>`).join(' '))
+ .replace(/((?:\d{1,4}(?:-\d{1,2})?)(?:, \d{1,4}(?:-\d{1,2})?)*)번(?! ?출구)/g,(_,g)=>g.split(', ').map(n=>`<span class="chip">${n}</span>`).join(' '))
  .replace(/(\d)호선/g,(_,n)=>`<span class="chip ${LINE[n]||''}">${n}호선</span>`)
  .replace(/KTX/g,'<span class="chip ktx">KTX</span>')
  .replace(/^\* ?/,'');
 const hasMap=!!window.naver&&!!naver.maps;
 const N_=hasMap?naver.maps:null,P=ll=>new N_.LatLng(ll[0],ll[1]);
-const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matchMedia('(min-width:761px)').matches,zoomControlOptions:{position:N_.Position.TOP_RIGHT}}):null;
+const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matchMedia('(min-width:761px)').matches,scaleControl:false,mapDataControl:false,zoomControlOptions:{position:N_.Position.TOP_RIGHT}}):null;
 const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,-16)}):null;
 if(hasMap){const el=document.getElementById('map'),z=()=>el.classList.toggle('far',map.getZoom()<12);N_.Event.addListener(map,'zoom_changed',z);z();}
 const list=document.getElementById('list'),tabs=document.getElementById('tabs'),meta=document.getElementById('meta');
@@ -231,7 +234,7 @@ function render(d){
  const stops=DAYS[d].stops,pinned=stops.filter(s=>s.ll);
  const my=++tok;
  // 경로선을 방문 순서대로 한 구간씩 그림
- if(hasMap)for(let i=0;i<pinned.length-1;i++)setTimeout(()=>{if(my!==tok)return;overlays.push(new N_.Polyline({map,path:[P(pinned[i].ll),P(pinned[i+1].ll)],strokeColor:pinned[i].dash?'#7b8094':DAYC[d],strokeWeight:pinned[i].dash?3:5,strokeOpacity:.85,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));},still?0:250+i*110);
+ if(hasMap)for(let i=0;i<pinned.length-1;i++)setTimeout(()=>{if(my!==tok)return;const seg=[P(pinned[i].ll),P(pinned[i+1].ll)];if(!pinned[i].dash)overlays.push(new N_.Polyline({map,path:seg,strokeColor:'#fff',strokeWeight:11,strokeOpacity:1,strokeLineCap:'round'}));overlays.push(new N_.Polyline({map,path:seg,strokeColor:pinned[i].dash?'#9aa0b4':DAYC[d],strokeWeight:pinned[i].dash?3:6,strokeOpacity:1,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));},still?0:250+i*110);
  let n=0,k=0;
  stops.forEach((s,idx)=>{
   const num=s.kind===V?++n:null,lab=num||s.badge||'🛏';
@@ -241,7 +244,7 @@ function render(d){
   const dur=card&&lines[0]&&/소요$/.test(lines[0])?lines.shift().replace(' 소요',''):'';
   const est=(lines.find(isEst)||'').replace(/^\* ?/,'').replace(/ 소요/,'');
   const steps=lines.filter(l=>!isEst(l));
-  const nav=s.from?`<div class="nav"><span>길찾기</span><a class="nv" href="${naverUrl(s.from,s)}" title="${esc(place(s.from))}에서 출발">네이버 지도</a><a class="kk" href="${kakaoUrl(s.from,s)}" target="_blank" rel="noopener" title="${esc(place(s.from))}에서 출발">카카오맵</a></div>`:'';
+  const nav=s.from?`<div class="nav"><a class="nv" href="${naverUrl(s.from,s)}" title="${esc(place(s.from))}에서 출발">네이버 지도</a><a class="kk" href="${kakaoUrl(s.from,s)}" target="_blank" rel="noopener" title="${esc(place(s.from))}에서 출발">카카오맵</a></div>`:'';
   const row=document.createElement('div');
   row.style.setProperty('--i',idx);
   if(card){
@@ -249,8 +252,7 @@ function render(d){
    row.innerHTML=`<div class="badge">${lab}</div><div class="cbody"><div class="when">${s.time}${dur?` · ${dur}`:''}${s.unc?'<span class="tag unc">위치 추정</span>':''}</div><div class="name">${esc(s.title)}</div>${steps.map(l=>`<div class="addr">${chipify(l)}</div>`).join('')}${nav}</div>`;
   }else{
    const chips=[...new Set((chipify(steps.join(' ')).match(/<span class="chip[^"]*">[^<]*<\/span>/g)||[]))].join('');
-   const all=steps.join(' ')+s.title,mode=[/KTX/.test(all)&&'🚄',/호선|역 승차/.test(all)&&'🚇',/번/.test(all)&&'🚌'].filter(Boolean).join('')||(s.kind===N&&/도보/.test(s.detail)?'🚶':'');
-   const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${mode?`<span class="mode">${mode}</span>`:''}${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
+   const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
    row.className=`leg${s.dash?' ktx':''}${s.kind===N?' none':''}`;
    row.innerHTML=steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`;
   }
@@ -262,7 +264,7 @@ function render(d){
   if(!s.ll||!hasMap)return;
   const big=s.kind===V||s.kind===S;
   const m=new N_.Marker({map,position:P(s.ll),zIndex:big?100:10,icon:{content:big
-   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}" style="--d:${(k++)*80}ms"><b>${lab}</b><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
+   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}" style="--d:${(k++)*80}ms"><div class="pin"><b><i>${lab}</i></b></div><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
    :'<div class="dot"></div>'}});
   overlays.push(m);
   const html=`<div class="iw"><b>${s.time} · ${esc(s.title)}</b>${esc(s.detail).replace(/\n/g,'<br>')}</div>`;
@@ -271,6 +273,17 @@ function render(d){
   row.onclick=go;if(card)row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
   N_.Event.addListener(m,'click',()=>{if(curM===m&&iw.getMap()){closeIw();return;}open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
  });
+ // 경로를 따라 달리는 버스 (KTX 구간은 🚄)
+ if(hasMap&&!still&&pinned.length>1){
+  const v=new N_.Marker({map,position:P(pinned[0].ll),zIndex:200,clickable:false,icon:{content:'<div class="veh">🚌</div>'}});overlays.push(v);
+  let i=0,t0=0;
+  const step=ts=>{if(my!==tok)return;if(!t0)t0=ts;const a=pinned[i],b=pinned[i+1],dur=a.dash?1800:1500,t=Math.max(0,Math.min(1,(ts-t0)/dur)),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+   v.setPosition(new N_.LatLng(a.ll[0]+(b.ll[0]-a.ll[0])*e,a.ll[1]+(b.ll[1]-a.ll[1])*e));
+   const el=v.getElement().querySelector('.veh');if(el){el.textContent=a.dash?'🚄':'🚌';el.classList.toggle('east',b.ll[1]>a.ll[1]);}
+   if(t>=1){i++;t0=0;if(i>=pinned.length-1){i=0;t0=ts+900;}}
+   requestAnimationFrame(step);};
+  setTimeout(()=>requestAnimationFrame(step),250+pinned.length*110);
+ }
  tabs.innerHTML=DAYS.map((x,i)=>`<button class="${i===d?'on':''}" style="--c:${DAYC[i]}" onclick="render(${i})"><span class="d1">DAY ${i+1}</span><span class="d2">${DATES[i][0]} (${DATES[i][1]})</span><span class="d3">${DATES[i][2]}</span></button>`).join('');
  const visits=stops.filter(s=>s.kind===V).length,times=stops.map(s=>s.time).filter(t=>/^\d/.test(t));
  const regions=[...new Set(pinned.map(s=>s.region))].sort((a,b)=>(a==='seoul'?-1:1)-(b==='seoul'?-1:1));
@@ -287,7 +300,7 @@ function fit(r){
  if(!hasMap)return;
  const pts=DAYS[day].stops.filter(s=>s.ll&&s.region===r).map(s=>P(s.ll));
  const b=new N_.LatLngBounds(pts[0],pts[0]);pts.forEach(p=>b.extend(p));
- map.fitBounds(b,{top:60,right:60,bottom:40,left:40});
+ map.fitBounds(b,{top:70,right:130,bottom:40,left:40});
 }
 tog.onclick=()=>{
  const f=document.body.classList.toggle('full');
