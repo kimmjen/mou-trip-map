@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MOU 서명 출장 지도</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -120,28 +120,39 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .iw{position:absolute;left:-130px;top:14px;padding:12px 14px;width:260px;background:#fff;color:#2b2e3b;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.2);font:13px/1.55 var(--sans);animation:rise .25s ease-out both}
 .iw::after{content:"";position:absolute;left:50%;top:-8px;margin-left:-8px;border:8px solid transparent;border-bottom-color:#fff;border-top:0}
 .iw b{display:block;margin-bottom:3px;font:400 16px/1.3 var(--cute);color:var(--day-ink)}
-.mapbar{display:none}
+.grab{display:none}
+.scroller{flex:1;min-height:0;display:flex;flex-direction:column}
 @media (max-width:760px){
- .mapbar{display:flex;position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;right:10px;z-index:20;gap:6px;align-items:flex-start;pointer-events:none}
- .mapbar>*{pointer-events:auto}
- .mapbar .pills{display:none;flex-wrap:wrap;gap:6px}
- body.full .mapbar .pills{display:flex}
- .mapbar .grp{display:flex;gap:2px;background:rgba(255,255,255,.96);border-radius:999px;padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
- .mapbar button{all:unset;pointer-events:auto;cursor:pointer;font:700 13px/1 var(--sans);padding:10px 12px;border-radius:999px;color:#2b2e3b}
- .mapbar .grp button.on{background:var(--day);color:#fff}
- .mapbar .tog{margin-left:auto;white-space:nowrap;flex:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:12px 15px}
- .mapbar button:focus-visible{outline:2px solid var(--day);outline-offset:2px}
- body.full #map{height:100vh;height:100svh}
- body.full .panel{display:none}
- html,body{height:auto}
- body{flex-direction:column}
- #map{order:-1;flex:none;position:sticky!important;top:env(safe-area-inset-top,0px);z-index:5;height:40vh;height:40svh;border-radius:0 0 26px 26px;box-shadow:0 8px 20px rgba(40,50,90,.12)}
- body.full #map{border-radius:0}
- .panel{width:auto;border-right:0}
- .rail{overflow:visible}
- .top{padding:16px 14px 12px}
+ html,body{height:100%;overflow:hidden}
+ body{display:block}
+ #map{position:fixed!important;inset:0;width:100%;height:100%}
+ /* 바텀시트: 손잡이로 끌어 올리고 내림. 세 단계(날짜 탭만 / 절반 / 거의 전체) */
+ .panel{position:fixed;left:0;right:0;bottom:0;z-index:10;width:auto;height:calc(100% - 48px);border-right:0;background:var(--paper);border-radius:22px 22px 0 0;box-shadow:0 -6px 24px rgba(40,50,90,.18);transform:translateY(70%);transition:transform .3s cubic-bezier(.2,.85,.25,1);will-change:transform}
+ .panel.drag{transition:none}
+ .grab{display:grid;place-items:center;height:28px;flex:none;cursor:grab;touch-action:none}
+ .grab i{width:42px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--sub) 45%,transparent)}
+ .grab:focus-visible{outline:2px solid var(--day);outline-offset:-4px;border-radius:22px 22px 0 0}
+ .scroller{overflow:auto;overscroll-behavior:contain}
+ .rail{overflow:visible;flex:none}
+ .top{padding:0 14px 12px;touch-action:none}
  .legend{padding-inline:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+ .locbtn{margin:10px 10px 0 0}
 }
+/* 방문 완료 */
+.card{position:relative}
+.card .when{padding-right:78px}
+.done-btn{all:unset;cursor:pointer;position:absolute;top:12px;right:12px;font:700 12px/1 var(--sans);padding:8px 11px;border-radius:999px;color:var(--sub);background:var(--soft);display:inline-flex;align-items:center;gap:5px}
+.done-btn::before{content:"";width:9px;height:5px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(-45deg)}
+.done-btn:focus-visible{outline:2px solid var(--day);outline-offset:2px}
+.card.done .done-btn{background:var(--day);color:#fff}
+.card.done .badge,.mk.done b{background:#9ea3b5;box-shadow:none}
+.card.done .badge{font-size:0}
+.card.done .badge::after,.mk.done b i::after{content:"";display:block;width:12px;height:6px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg);margin:11px auto 0}
+.mk.done b i{font-size:0;height:26px;position:relative}
+.mk.done b i::after{position:absolute;left:50%;top:50%;margin:-6px 0 0 -6px}
+.card.done .name,.card.done .addr{color:var(--sub)}
+.mk.done span{color:#7b8094}
+.mk.done .halo{opacity:.07}
 /* 애니메이션: 리스트 차례로 떠오르기, 핀 떨어지기, 제목 버스 흔들기 */
 @keyframes rise{from{opacity:0;transform:translateY(12px)}}
 @keyframes drop{0%{opacity:0;transform:translateY(-22px) scale(.5)}60%{opacity:1;transform:translateY(3px) scale(1.12)}80%{transform:translateY(-1px) scale(.97)}}
@@ -150,7 +161,6 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .mk .pin{animation:drop .55s ease-out both;animation-delay:var(--d,0ms)}
 .mk span{animation:fade .4s both;animation-delay:calc(var(--d,0ms) + 250ms)}
 .dot{animation:fade .4s both}
-.tog:active,.grp button:active{transform:scale(.94)}
 .locbtn{all:unset;cursor:pointer;width:44px;height:44px;margin:0 10px 14px 0;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);display:grid;place-items:center;color:#2b2e3b}
 .locbtn.on{color:#2f7cf6}
 .locbtn.busy svg{animation:spin 1s linear infinite}
@@ -165,8 +175,10 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 </style>
 </head>
 <body>
-<section class="panel">
- <div class="top">
+<section class="panel" id="sheet">
+ <div class="grab" id="grab" role="button" tabindex="0" aria-label="목록 올리기·내리기"><i></i></div>
+ <div class="scroller" id="scroller">
+ <div class="top" id="top">
   <div><div class="eyebrow">MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정</h1></div>
   <div class="days" id="tabs"></div>
   <div class="meta" id="meta"></div>
@@ -178,9 +190,9 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
   <span><i style="width:10px;height:10px;border-radius:50%;border:2.5px solid var(--day);box-sizing:border-box"></i>환승</span>
   <span>점선 = 위치 추정</span>
  </div>
+ </div>
 </section>
 <div id="map"></div>
-<div class="mapbar"><div class="pills" id="pills"></div><button class="tog" id="tog" type="button">지도 크게</button></div>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=u10c0yzn3f"></script>
 <script>
 const V='V',T='T',S='S',N='N';
@@ -241,17 +253,23 @@ const chipify=t=>esc(t)
  .replace(/(\d)호선/g,(_,n)=>`<span class="chip ${LINE[n]||''}">${n}호선</span>`)
  .replace(/KTX/g,'<span class="chip ktx">KTX</span>')
  .replace(/^\* ?/,'');
+const mobile=matchMedia('(max-width:760px)');
 const hasMap=!!window.naver&&!!naver.maps;
 const N_=hasMap?naver.maps:null,P=ll=>new N_.LatLng(ll[0],ll[1]);
-const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matchMedia('(min-width:761px)').matches,scaleControl:false,mapDataControl:false,zoomControlOptions:{position:N_.Position.TOP_RIGHT}}):null;
+const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matchMedia('(min-width:761px)').matches,scaleControl:false,mapDataControl:false,zoomControlOptions:{position:N_.Position.TOP_RIGHT},logoControlOptions:{position:matchMedia('(max-width:760px)').matches?N_.Position.TOP_LEFT:N_.Position.BOTTOM_RIGHT}}):null;
 const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,0)}):null;
 if(hasMap){const el=document.getElementById('map'),z=()=>el.classList.toggle('far',map.getZoom()<12);N_.Event.addListener(map,'zoom_changed',z);z();}
 const list=document.getElementById('list'),tabs=document.getElementById('tabs'),meta=document.getElementById('meta');
-let day=0,region=null,overlays=[],curM=null,tok=0;
+let day=0,region=null,overlays=[],curM=null,tok=0,vtok=0,vehM=null;
+// 방문 완료: 이 기기 브라우저에만 저장
+const DONE_KEY='mou-trip-done';
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem(DONE_KEY)||'[]'));}catch(e){}
+const saveDone=()=>{try{localStorage.setItem(DONE_KEY,JSON.stringify([...done]));}catch(e){}};
+const vid=(d,s)=>`${d}|${s.time}|${s.title}`;
 const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const closeIw=()=>{iw&&iw.close();curM=null;document.querySelectorAll('.mk.on').forEach(e=>e.classList.remove('on'));list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));};
 if(hasMap)N_.Event.addListener(map,'click',closeIw);
-const pills=document.getElementById('pills'),tog=document.getElementById('tog');
 function render(d){
  day=d;document.documentElement.style.setProperty('--day',DAYC[d]);overlays.forEach(o=>o.setMap(null));overlays=[];closeIw();list.innerHTML='';
  const stops=DAYS[d].stops,pinned=stops.filter(s=>s.ll);
@@ -272,8 +290,9 @@ function render(d){
   const row=document.createElement('div');
   row.style.setProperty('--i',idx);
   if(card){
-   row.className=`card${s.kind===S?' stay':''}${s.unc?' unc':''}`;
-   row.innerHTML=`<div class="badge">${lab}</div><div class="cbody"><div class="when">${s.time}${dur?` · ${dur}`:''}${s.unc?'<span class="tag unc">위치 추정</span>':''}</div><div class="name">${esc(s.title)}</div>${steps.map(l=>`<div class="addr">${chipify(l)}</div>`).join('')}${nav}</div>`;
+   const isDone=s.kind===V&&done.has(vid(d,s));
+   row.className=`card${s.kind===S?' stay':''}${s.unc?' unc':''}${isDone?' done':''}`;
+   row.innerHTML=`<div class="badge">${lab}</div><div class="cbody"><div class="when">${s.time}${dur?` · ${dur}`:''}${s.unc?'<span class="tag unc">위치 추정</span>':''}</div><div class="name">${esc(s.title)}</div>${steps.map(l=>`<div class="addr">${chipify(l)}</div>`).join('')}${nav}</div>${s.kind===V?`<button class="done-btn" type="button" aria-pressed="${isDone}">${isDone?'완료함':'방문 완료'}</button>`:''}`;
   }else{
    const chips=[...new Set((chipify(steps.join(' ')).match(/<span class="chip[^"]*">[^<]*<\/span>/g)||[]))].join('');
    const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
@@ -282,55 +301,66 @@ function render(d){
   }
   if(card&&s.ll)row.tabIndex=0;
   row.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>e.stopPropagation());
+  const dbtn=row.querySelector('.done-btn');
+  if(dbtn)dbtn.onclick=e=>{e.stopPropagation();const id=vid(d,s),on=!done.has(id);on?done.add(id):done.delete(id);saveDone();
+   row.classList.toggle('done',on);dbtn.setAttribute('aria-pressed',on);dbtn.textContent=on?'완료함':'방문 완료';
+   const mk=row._mk&&row._mk.getElement().querySelector('.mk');mk&&mk.classList.toggle('done',on);updCount();};
   const det=row.querySelector('details');
   if(det)det.querySelector('summary').onclick=e=>{e.preventDefault();det.open=!det.open;};
   list.appendChild(row);
   if(!s.ll||!hasMap)return;
   const big=s.kind===V||s.kind===S;
   const m=new N_.Marker({map,position:P(s.ll),zIndex:big?100:10,icon:{content:big
-   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}" style="--d:${(k++)*80}ms"><div class="pin"><s class="halo"></s><b><i>${lab}</i></b>${s===first?'<u class="flag">첫 일정</u>':s===last?'<u class="flag">마지막</u>':''}</div><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
+   ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}${s.kind===V&&done.has(vid(d,s))?' done':''}" style="--d:${(k++)*80}ms"><div class="pin"><s class="halo"></s><b><i>${lab}</i></b>${s===first?'<u class="flag">첫 일정</u>':s===last?'<u class="flag">마지막</u>':''}</div><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
    :'<div class="dot"></div>'}});
-  overlays.push(m);
+  overlays.push(m);row._mk=m;
   const html=`<div class="iwrap"><div class="iw"><b>${s.time} · ${esc(s.title)}</b>${esc(s.detail).replace(/\n/g,'<br>')}</div></div>`;
   const open=()=>{iw.setContent(html);iw.open(map,m);curM=m;document.querySelectorAll('.mk.on').forEach(e=>e.classList.remove('on'));const me=m.getElement().querySelector('.mk');me&&me.classList.add('on');list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));row.classList.add('on');};
-  const go=()=>{map.morph(P(s.ll),Math.max(map.getZoom(),15));open();};
+  const go=()=>{setSheet('peek');map.morph(P(s.ll),Math.max(map.getZoom(),15));open();};
   row.onclick=go;if(card)row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
   N_.Event.addListener(m,'click',()=>{if(curM===m&&iw.getMap()){closeIw();return;}open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
  });
- // 경로를 따라 달리는 버스 (KTX 구간은 🚄)
- if(hasMap&&!still&&pinned.length>1){
-  const v=new N_.Marker({map,position:P(pinned[0].ll),zIndex:200,clickable:false,icon:{content:'<div class="veh">🚌</div>'}});overlays.push(v);
-  let i=0,t0=0;
-  const step=ts=>{if(my!==tok)return;if(!t0)t0=ts;const a=pinned[i],b=pinned[i+1],dur=a.dash?1800:1500,t=Math.max(0,Math.min(1,(ts-t0)/dur)),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-   v.setPosition(new N_.LatLng(a.ll[0]+(b.ll[0]-a.ll[0])*e,a.ll[1]+(b.ll[1]-a.ll[1])*e));
-   const el=v.getElement().querySelector('.veh');if(el){el.textContent=a.dash?'🚄':'🚌';el.classList.toggle('east',b.ll[1]>a.ll[1]);}
-   if(t>=1){i++;t0=0;if(i>=pinned.length-1){i=0;t0=ts+900;}}
-   requestAnimationFrame(step);};
-  setTimeout(()=>requestAnimationFrame(step),250+pinned.length*110);
- }
  tabs.innerHTML=DAYS.map((x,i)=>`<button class="${i===d?'on':''}" style="--c:${DAYC[i]}" onclick="render(${i})"><span class="d1">DAY ${i+1}</span><span class="d2">${DATES[i][0]} (${DATES[i][1]})</span><span class="d3">${DATES[i][2]}</span></button>`).join('');
  const visits=stops.filter(s=>s.kind===V).length,times=stops.map(s=>s.time).filter(t=>/^\d/.test(t));
  const regions=[...new Set(pinned.map(s=>s.region))]; // 일정이 시작하는 지역부터
- meta.innerHTML=`<span>방문 <b>${visits}곳</b></span><span><b>${times[0]}</b> – <b>${times[times.length-1]}</b></span>`+
+ meta.innerHTML=`<span>방문 <b id="vcount"></b></span><span><b>${times[0]}</b> – <b>${times[times.length-1]}</b></span>`+
   (regions.length>1?`<div class="views" id="views">${regions.map((r,i)=>`<button data-r="${r}" onclick="fit('${r}')">${REGION[r]}</button>`).join('')}</div>`:'');
+ updCount();
  fit(regions[0]);
 }
+function updCount(){const vs=DAYS[day].stops.filter(s=>s.kind===V),c=vs.filter(s=>done.has(vid(day,s))).length;const el=document.getElementById('vcount');if(el)el.textContent=c?`${c}/${vs.length}곳`:`${vs.length}곳`;}
 function fit(r){
  region=r;
- const regs=[...new Set(DAYS[day].stops.filter(s=>s.ll).map(s=>s.region))];
  document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.r===r));
- pills.innerHTML=`<span class="grp">${DATES.map((x,i)=>`<button class="${i===day?'on':''}" onclick="render(${i})">${x[0]}</button>`).join('')}</span>`+
-  (regs.length>1?`<span class="grp">${regs.map(x=>`<button class="${x===r?'on':''}" onclick="fit('${x}')">${REGION[x]}</button>`).join('')}</span>`:'');
  if(!hasMap)return;
  const pts=DAYS[day].stops.filter(s=>s.ll&&s.region===r).map(s=>P(s.ll));
  const b=new N_.LatLngBounds(pts[0],pts[0]);pts.forEach(p=>b.extend(p));
- map.fitBounds(b,{top:70,right:130,bottom:40,left:40});
+ map.fitBounds(b,{top:70,right:130,bottom:mobile.matches?peekVisible()+24:40,left:40});
+ if(pts.length===1)map.setZoom(14,false); // 한 곳뿐이면 주변이 보이게
+ runVeh(r);
+}
+// 지도에 보이는 지역 안의 경로만 따라 버스가 달림 (구간 길이에 비례한 속도)
+function runVeh(r){
+ const myv=++vtok;if(vehM){vehM.setMap(null);vehM=null;}
+ if(!hasMap||still)return;
+ const pts=DAYS[day].stops.filter(s=>s.ll),segs=[];
+ for(let i=0;i<pts.length-1;i++)if(!pts[i].dash&&pts[i].region===r&&pts[i+1].region===r)segs.push([pts[i].ll,pts[i+1].ll]);
+ if(!segs.length)return;
+ const km=(a,b)=>Math.hypot((a[0]-b[0])*111,(a[1]-b[1])*88.2);
+ vehM=new N_.Marker({map,position:P(segs[0][0]),zIndex:200,clickable:false,icon:{content:'<div class="veh">🚌</div>'}});
+ let i=0,t0=0;
+ const step=ts=>{if(myv!==vtok)return;if(!t0)t0=ts;const [a,b]=segs[i],dur=Math.min(4200,Math.max(1400,km(a,b)*260)),t=Math.max(0,Math.min(1,(ts-t0)/dur)),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  vehM.setPosition(new N_.LatLng(a[0]+(b[0]-a[0])*e,a[1]+(b[1]-a[1])*e));
+  const el=vehM.getElement().querySelector('.veh');if(el)el.classList.toggle('east',b[1]>a[1]);
+  if(t>=1){i++;t0=0;if(i>=segs.length){i=0;t0=ts+1200;}}
+  requestAnimationFrame(step);};
+ setTimeout(()=>requestAnimationFrame(step),900);
 }
 // 내 위치: 버튼을 누르면 권한을 묻고, 파란 점으로 표시한 뒤 계속 따라감
 let meM=null,watchId=null,firstFix=false;
 const toast=msg=>{const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);};
 if(hasMap)N_.Event.once(map,'init',()=>{
- const ctl=new N_.CustomControl('<button class="locbtn" type="button" aria-label="내 위치 보기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg></button>',{position:N_.Position.RIGHT_BOTTOM});
+ const ctl=new N_.CustomControl('<button class="locbtn" type="button" aria-label="내 위치 보기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg></button>',{position:mobile.matches?N_.Position.RIGHT_TOP:N_.Position.RIGHT_BOTTOM});
  ctl.setMap(map);
  const btn=ctl.getElement().querySelector('.locbtn');
  N_.Event.addDOMListener(btn,'click',()=>{
@@ -348,16 +378,41 @@ if(hasMap)N_.Event.once(map,'init',()=>{
   },{enableHighAccuracy:true,maximumAge:10000,timeout:15000});
  });
 });
-tog.onclick=()=>{
- const f=document.body.classList.toggle('full');
- tog.textContent=f?'목록 보기':'지도 크게';
- scrollTo(0,0);
- if(hasMap){
-  // setSize가 #map에 고정 px 크기를 인라인으로 박으므로, 재고 나서 다시 지워 CSS 크기를 따르게 함
-  const el=document.getElementById('map');el.style.width=el.style.height='';
-  map.setSize(new N_.Size(el.offsetWidth,el.offsetHeight));el.style.width=el.style.height='';fit(region);}
-};
+// 바텀시트 (폰): 손잡이나 머리 부분을 끌어 세 단계로 맞춤
+const sheet=document.getElementById('sheet'),grab=document.getElementById('grab'),scroller=document.getElementById('scroller'),topEl=document.getElementById('top');
+let sheetState='peek',curY=0,suppress=0,drag=null;
+function peekVisible(){const r=tabs.getBoundingClientRect(),sr=sheet.getBoundingClientRect();return Math.round(r.bottom-sr.top+scroller.scrollTop+14);}
+function snaps(){const H=sheet.offsetHeight;return {peek:Math.max(0,H-peekVisible()),half:Math.max(0,H-Math.round(innerHeight*.55)),full:0};}
+function setSheet(st,anim=true){
+ if(!mobile.matches){sheet.style.transform='';return;}
+ sheetState=st;curY=snaps()[st];sheet.classList.toggle('drag',!anim);sheet.style.transform=`translateY(${curY}px)`;
+ if(st==='peek')scroller.scrollTop=0;
+ grab.setAttribute('aria-label',st==='peek'?'목록 올리기':'목록 내리기');
+}
+function onDown(e){if(!mobile.matches)return;drag={y0:e.clientY,sy:curY,moved:false,id:e.pointerId,last:e.clientY,lt:e.timeStamp,v:0,el:e.currentTarget};}
+function onMove(e){
+ if(!drag||e.pointerId!==drag.id)return;const dy=e.clientY-drag.y0;
+ if(!drag.moved){if(Math.abs(dy)<6)return;drag.moved=true;try{drag.el.setPointerCapture(e.pointerId);}catch(_){}sheet.classList.add('drag');}
+ curY=Math.min(snaps().peek,Math.max(0,drag.sy+dy));sheet.style.transform=`translateY(${curY}px)`;
+ const dt=e.timeStamp-drag.lt;if(dt>0)drag.v=(e.clientY-drag.last)/dt;drag.last=e.clientY;drag.lt=e.timeStamp;
+}
+function onUp(){
+ if(!drag)return;const d=drag;drag=null;sheet.classList.remove('drag');
+ if(!d.moved){if(d.el===grab)setSheet(sheetState==='peek'?'half':'peek');return;}
+ suppress=Date.now()+350;
+ const S=snaps(),ys=Object.entries(S);let t;
+ if(d.v<-.4){const up=ys.filter(([,y])=>y<curY-1).sort((a,b)=>b[1]-a[1])[0];t=up?up[0]:'full';}
+ else if(d.v>.4){const dn=ys.filter(([,y])=>y>curY+1).sort((a,b)=>a[1]-b[1])[0];t=dn?dn[0]:'peek';}
+ else t=ys.sort((a,b)=>Math.abs(a[1]-curY)-Math.abs(b[1]-curY))[0][0];
+ setSheet(t);
+}
+[grab,topEl].forEach(el=>{el.addEventListener('pointerdown',onDown);el.addEventListener('pointermove',onMove);el.addEventListener('pointerup',onUp);el.addEventListener('pointercancel',onUp);});
+sheet.addEventListener('click',e=>{if(Date.now()<suppress){e.stopPropagation();e.preventDefault();}},true);
+grab.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSheet(sheetState==='peek'?'half':'peek');}});
+addEventListener('resize',()=>setSheet(sheetState,false));
+setSheet('peek',false);
 render(Math.max(0,['2026-10-19','2026-10-20','2026-10-21'].indexOf(new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Seoul'}))));
+setSheet('peek',false);
 </script>
 </body>
 </html>
