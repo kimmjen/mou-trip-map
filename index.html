@@ -138,6 +138,28 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
  .legend{padding-inline:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
  .locbtn{margin:10px 10px 0 0}
 }
+/* 현재 일정 카드 (폰): 시트를 내려도 보이고, 화살표로 이전·다음 일정 */
+.now{display:none}
+@media (max-width:760px){
+ .titlebox{display:none}
+ .now{display:grid;grid-template-columns:34px 1fr 34px;align-items:center;gap:4px;background:var(--sheet);border-radius:18px;padding:10px 4px;box-shadow:0 1px 0 var(--rule)}
+ .now .arrow{all:unset;cursor:pointer;width:34px;height:64px;display:grid;place-items:center;color:var(--ink);border-radius:12px}
+ .now .arrow:disabled{opacity:.2;cursor:default}
+ .now .arrow:focus-visible{outline:2px solid var(--day)}
+ .nowb{min-width:0}
+ .nowt{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--day-ink)}
+ .nowt .badge{width:22px;height:22px;font-size:12px;line-height:22px;box-shadow:none}
+ .nowt small{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--sub);padding-right:4px}
+ .nown{font:400 18px/1.3 var(--cute);margin-top:3px;text-wrap:balance}
+ .nowd{margin-top:4px;font-size:12.5px;color:var(--sub);display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+ .nowd .le{margin-left:0}
+ .nowa{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+ .nowa .nav{display:contents}
+ .nowa .nav a{min-height:32px;padding:0 12px}
+ .nowa .done-btn{position:static}
+ .now.done .nown{color:var(--sub)}
+ .now.done .done-btn{background:var(--day);color:#fff}
+}
 /* 방문 완료 */
 .card{position:relative}
 .card .when{padding-right:78px}
@@ -179,7 +201,8 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
  <div class="grab" id="grab" role="button" tabindex="0" aria-label="목록 올리기·내리기"><i></i></div>
  <div class="scroller" id="scroller">
  <div class="top" id="top">
-  <div><div class="eyebrow">MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정</h1></div>
+  <div class="now" id="now"></div>
+  <div class="titlebox"><div class="eyebrow">MOU 협약서 서명 출장 · 10.19 – 10.21</div><h1>3일간 11곳 도는 순회 일정</h1></div>
   <div class="days" id="tabs"></div>
   <div class="meta" id="meta"></div>
  </div>
@@ -260,7 +283,7 @@ const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matc
 const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,0)}):null;
 if(hasMap){const el=document.getElementById('map'),z=()=>el.classList.toggle('far',map.getZoom()<12);N_.Event.addListener(map,'zoom_changed',z);z();}
 const list=document.getElementById('list'),tabs=document.getElementById('tabs'),meta=document.getElementById('meta');
-let day=0,region=null,overlays=[],curM=null,tok=0,vtok=0,vehM=null;
+let day=0,region=null,overlays=[],curM=null,tok=0,vtok=0,vehM=null,focusIdx=0,rows=[],marks=[],infos=[];
 // 방문 완료: 이 기기 브라우저에만 저장
 const DONE_KEY='mou-trip-done';
 let done=new Set();
@@ -273,6 +296,7 @@ if(hasMap)N_.Event.addListener(map,'click',closeIw);
 function render(d){
  day=d;document.documentElement.style.setProperty('--day',DAYC[d]);overlays.forEach(o=>o.setMap(null));overlays=[];closeIw();list.innerHTML='';
  const stops=DAYS[d].stops,pinned=stops.filter(s=>s.ll);
+ rows=[];marks=[];infos=[];
  const my=++tok;
  // 경로선을 방문 순서대로 한 구간씩 그림
  if(hasMap)for(let i=0;i<pinned.length-1;i++)setTimeout(()=>{if(my!==tok)return;const seg=[P(pinned[i].ll),P(pinned[i+1].ll)];if(!pinned[i].dash)overlays.push(new N_.Polyline({map,path:seg,strokeColor:'#fff',strokeWeight:11,strokeOpacity:1,strokeLineCap:'round'}));overlays.push(new N_.Polyline({map,path:seg,strokeColor:pinned[i].dash?'#9aa0b4':DAYC[d],strokeWeight:pinned[i].dash?3:6,strokeOpacity:1,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));},still?0:250+i*110);
@@ -287,7 +311,8 @@ function render(d){
   const est=(lines.find(isEst)||'').replace(/^\* ?/,'').replace(/ 소요/,'');
   const steps=lines.filter(l=>!isEst(l));
   const nav=s.from?`<div class="nav"><a class="nv" href="${naverUrl(s.from,s)}" title="${esc(place(s.from))}에서 출발">네이버 지도</a><a class="kk" href="${kakaoUrl(s.from,s)}" target="_blank" rel="noopener" title="${esc(place(s.from))}에서 출발">카카오맵</a></div>`:'';
-  const row=document.createElement('div');
+  infos[idx]={num,lab,card,dur,est,steps,nav};
+  const row=document.createElement('div');rows[idx]=row;
   row.style.setProperty('--i',idx);
   if(card){
    const isDone=s.kind===V&&done.has(vid(d,s));
@@ -302,9 +327,7 @@ function render(d){
   if(card&&s.ll)row.tabIndex=0;
   row.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>e.stopPropagation());
   const dbtn=row.querySelector('.done-btn');
-  if(dbtn)dbtn.onclick=e=>{e.stopPropagation();const id=vid(d,s),on=!done.has(id);on?done.add(id):done.delete(id);saveDone();
-   row.classList.toggle('done',on);dbtn.setAttribute('aria-pressed',on);dbtn.textContent=on?'완료함':'방문 완료';
-   const mk=row._mk&&row._mk.getElement().querySelector('.mk');mk&&mk.classList.toggle('done',on);updCount();};
+  if(dbtn)dbtn.onclick=e=>{e.stopPropagation();toggleDone(idx);};
   const det=row.querySelector('details');
   if(det)det.querySelector('summary').onclick=e=>{e.preventDefault();det.open=!det.open;};
   list.appendChild(row);
@@ -313,12 +336,12 @@ function render(d){
   const m=new N_.Marker({map,position:P(s.ll),zIndex:big?100:10,icon:{content:big
    ?`<div class="mk${s.kind===S?' stay':''}${s.unc?' unc':''}${s.kind===V&&done.has(vid(d,s))?' done':''}" style="--d:${(k++)*80}ms"><div class="pin"><s class="halo"></s><b><i>${lab}</i></b>${s===first?'<u class="flag">첫 일정</u>':s===last?'<u class="flag">마지막</u>':''}</div><span><em>${s.time}</em>${esc(s.title.replace(/^(숙소|학교 출근) · /,''))}</span></div>`
    :'<div class="dot"></div>'}});
-  overlays.push(m);row._mk=m;
+  overlays.push(m);row._mk=m;marks[idx]=m;
   const html=`<div class="iwrap"><div class="iw"><b>${s.time} · ${esc(s.title)}</b>${esc(s.detail).replace(/\n/g,'<br>')}</div></div>`;
   const open=()=>{iw.setContent(html);iw.open(map,m);curM=m;document.querySelectorAll('.mk.on').forEach(e=>e.classList.remove('on'));const me=m.getElement().querySelector('.mk');me&&me.classList.add('on');list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));row.classList.add('on');};
-  const go=()=>{setSheet('peek');map.morph(P(s.ll),Math.max(map.getZoom(),15));open();};
+  const go=()=>{if(mobile.matches){setSheet('peek');focus(idx);return;}map.morph(P(s.ll),Math.max(map.getZoom(),15));open();};
   row.onclick=go;if(card)row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
-  N_.Event.addListener(m,'click',()=>{if(curM===m&&iw.getMap()){closeIw();return;}open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
+  N_.Event.addListener(m,'click',()=>{if(mobile.matches){focus(idx,{move:false});return;}if(curM===m&&iw.getMap()){closeIw();return;}open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
  });
  tabs.innerHTML=DAYS.map((x,i)=>`<button class="${i===d?'on':''}" style="--c:${DAYC[i]}" onclick="render(${i})"><span class="d1">DAY ${i+1}</span><span class="d2">${DATES[i][0]} (${DATES[i][1]})</span><span class="d3">${DATES[i][2]}</span></button>`).join('');
  const visits=stops.filter(s=>s.kind===V).length,times=stops.map(s=>s.time).filter(t=>/^\d/.test(t));
@@ -327,6 +350,49 @@ function render(d){
   (regions.length>1?`<div class="views" id="views">${regions.map((r,i)=>`<button data-r="${r}" onclick="fit('${r}')">${REGION[r]}</button>`).join('')}</div>`:'');
  updCount();
  fit(regions[0]);
+ focus(startIdx(d),{move:false});
+}
+// 출장 당일이면 지금 시각 이후 첫 일정, 아니면 첫 일정
+function startIdx(d){
+ const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Seoul'});
+ if(['2026-10-19','2026-10-20','2026-10-21'][d]!==today)return 0;
+ const [h,mi]=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Seoul',hour12:false}).split(':').map(Number),now=h*60+mi;
+ const st=DAYS[d].stops;for(let i=0;i<st.length;i++){const m=/^(\d+):(\d+)$/.exec(st[i].time);if(m&&+m[1]*60+ +m[2]+30>=now)return i;}
+ return st.length-1;
+}
+function toggleDone(idx){
+ const s=DAYS[day].stops[idx];if(!s||s.kind!==V)return;
+ const id=vid(day,s),on=!done.has(id);on?done.add(id):done.delete(id);saveDone();
+ const row=rows[idx];if(row){row.classList.toggle('done',on);const b=row.querySelector('.done-btn');if(b){b.setAttribute('aria-pressed',on);b.textContent=on?'완료함':'방문 완료';}}
+ const mk=marks[idx]&&marks[idx].getElement().querySelector('.mk');mk&&mk.classList.toggle('done',on);
+ updCount();if(idx===focusIdx)renderNow();
+}
+// 현재 일정 카드
+const nowEl=document.getElementById('now');
+function renderNow(){
+ const st=DAYS[day].stops,s=st[focusIdx],f=infos[focusIdx];if(!s||!f)return;
+ const isDone=s.kind===V&&done.has(vid(day,s));
+ const chips=[...new Set((chipify(f.steps.join(' ')).match(/<span class="chip[^"]*">[^<]*<\/span>/g)||[]))].join('');
+ const plain=f.steps[0]?chipify(f.steps[0]):'';
+ const desc=f.card||s.dash||(!chips&&!f.est)?plain:chips+(f.est?`<span class="le">${esc(f.est)}</span>`:'');
+ const arrow=(dir,dis)=>`<button class="arrow" type="button" data-dir="${dir}" aria-label="${dir<0?'이전':'다음'} 일정"${dis?' disabled':''}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="${dir<0?'M15 5l-7 7 7 7':'M9 5l7 7-7 7'}"/></svg></button>`;
+ nowEl.className='now'+(isDone?' done':'');
+ nowEl.innerHTML=arrow(-1,focusIdx===0)+`<div class="nowb"><div class="nowt">${f.card?`<span class="badge" style="${s.kind===S?'background:var(--stay)':''}">${f.lab}</span>`:''}${s.time}${f.dur?` · ${f.dur}`:''}<small>${focusIdx+1}/${st.length}</small></div><div class="nown">${esc(s.title.replace(/^이동 · /,''))}</div>${desc?`<div class="nowd">${desc}</div>`:''}${f.nav||s.kind===V?`<div class="nowa">${f.nav}${s.kind===V?`<button class="done-btn" type="button" aria-pressed="${isDone}">${isDone?'완료함':'방문 완료'}</button>`:''}</div>`:''}</div>`+arrow(1,focusIdx===st.length-1);
+ nowEl.querySelectorAll('.arrow').forEach(b=>b.onclick=e=>{e.stopPropagation();focus(focusIdx+ +b.dataset.dir);});
+ const db=nowEl.querySelector('.done-btn');if(db)db.onclick=e=>{e.stopPropagation();toggleDone(focusIdx);};
+ nowEl.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>e.stopPropagation());
+ if(sheetState==='peek')setSheet('peek'); // 카드 높이가 바뀌면 시트 높이도 맞춤
+}
+function focus(idx,{move=true}={}){
+ const st=DAYS[day].stops;idx=Math.max(0,Math.min(st.length-1,idx));focusIdx=idx;const s=st[idx];
+ renderNow();
+ if(iw&&mobile.matches)iw.close();
+ list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));rows[idx]&&rows[idx].classList.add('on');
+ document.querySelectorAll('.mk.on').forEach(e=>e.classList.remove('on'));
+ const mk=marks[idx]&&marks[idx].getElement().querySelector('.mk');mk&&mk.classList.add('on');
+ if(!move||!s.ll||!hasMap)return;
+ if(s.region&&s.region!==region){region=s.region;document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.r===region));runVeh(region);}
+ map.morph(P(s.ll),Math.max(map.getZoom(),14));
 }
 function updCount(){const vs=DAYS[day].stops.filter(s=>s.kind===V),c=vs.filter(s=>done.has(vid(day,s))).length;const el=document.getElementById('vcount');if(el)el.textContent=c?`${c}/${vs.length}곳`:`${vs.length}곳`;}
 function fit(r){
