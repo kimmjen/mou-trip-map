@@ -300,14 +300,14 @@ function render(d){
  }
  tabs.innerHTML=DAYS.map((x,i)=>`<button class="${i===d?'on':''}" style="--c:${DAYC[i]}" onclick="render(${i})"><span class="d1">DAY ${i+1}</span><span class="d2">${DATES[i][0]} (${DATES[i][1]})</span><span class="d3">${DATES[i][2]}</span></button>`).join('');
  const visits=stops.filter(s=>s.kind===V).length,times=stops.map(s=>s.time).filter(t=>/^\d/.test(t));
- const regions=[...new Set(pinned.map(s=>s.region))].sort((a,b)=>(a==='seoul'?-1:1)-(b==='seoul'?-1:1));
+ const regions=[...new Set(pinned.map(s=>s.region))]; // 일정이 시작하는 지역부터
  meta.innerHTML=`<span>방문 <b>${visits}곳</b></span><span><b>${times[0]}</b> – <b>${times[times.length-1]}</b></span>`+
   (regions.length>1?`<div class="views" id="views">${regions.map((r,i)=>`<button data-r="${r}" onclick="fit('${r}')">${REGION[r]}</button>`).join('')}</div>`:'');
  fit(regions[0]);
 }
 function fit(r){
  region=r;
- const regs=[...new Set(DAYS[day].stops.filter(s=>s.ll).map(s=>s.region))].sort((a,b)=>(a==='seoul'?-1:1)-(b==='seoul'?-1:1));
+ const regs=[...new Set(DAYS[day].stops.filter(s=>s.ll).map(s=>s.region))];
  document.querySelectorAll('#views button').forEach(b=>b.classList.toggle('on',b.dataset.r===r));
  pills.innerHTML=`<span class="grp">${DATES.map((x,i)=>`<button class="${i===day?'on':''}" onclick="render(${i})">${x[0]}</button>`).join('')}</span>`+
   (regs.length>1?`<span class="grp">${regs.map(x=>`<button class="${x===r?'on':''}" onclick="fit('${x}')">${REGION[x]}</button>`).join('')}</span>`:'');
