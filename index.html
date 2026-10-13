@@ -86,6 +86,7 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
 .nav a:active{transform:scale(.97)}
 .nav a::before{content:"";width:8px;height:8px;border-radius:50%}
 .nav a:focus-visible{outline:2px solid var(--day);outline-offset:2px}
+.nav .to{flex-basis:100%;font-size:12px;font-weight:700;color:var(--day-ink)}
 .nav .nv::before{background:#03c75a}.nav .kk::before{background:#f2c500}
 .legend{padding:12px 18px;font-size:12px;color:var(--sub);display:flex;flex-wrap:wrap;gap:6px 14px}
 .legend i{display:inline-block;vertical-align:-2px;margin-right:5px;font-style:normal}
@@ -160,6 +161,7 @@ details[open] .chev{transform:translateY(1px) rotate(-135deg)}
  .nowd .le{margin-left:0}
  .nowa{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
  .nowa .nav{display:contents}
+ .nowa .nav .to{margin-bottom:-2px}
  .nowa .nav a{min-height:32px;padding:0 12px}
  .nowa .done-btn{position:static}
  .now.done .nown{color:var(--sub)}
@@ -267,8 +269,15 @@ const DAYS=[
 ]}];
 const REGION={seoul:'수도권',naju:'나주'};
 // 길찾기: 방문지·숙소·KTX역을 기점으로, 바로 앞 기점에서 출발 (KTX 구간은 제외, 날짜를 넘어 이어짐)
-const place=s=>/KTX|역 도착/.test(s.title)?s.title.split(' ')[0]:s.title.replace(/^(숙소 이동|숙소|학교 출근) · /,'').replace(/\s*\(.*?\)/g,'').replace(/[,\/]/g,' ').trim();
-{let prev=null;DAYS.forEach(D=>D.stops.forEach(s=>{if(!s.ll||!(s.kind===V||s.kind===S||/KTX|역 도착/.test(s.title)))return;if(prev&&!prev.dash)s.from=prev;prev=s;}));}
+const place=s=>/KTX|역 도착/.test(s.title)?s.title.split(' ')[0]:s.title.replace(/^(이동|숙소 출발|숙소 이동|숙소|학교 출근) · /,'').split(' → ')[0].replace(/ (하차|승차)$/,'').replace(/\s*\(.*?\)/g,'').replace(/[,\/]/g,' ').trim();
+{const all=DAYS.flatMap(D=>D.stops),isDest=t=>t.kind===V||t.kind===S||/출발 \(KTX\)/.test(t.title);
+ let last=null;
+ all.forEach((s,i)=>{
+  // '이동 · A → B' 행의 좌표는 환승 지점(B)이라 출발지는 직전 위치로 잡음
+  const o=/^이동 · /.test(s.title)||!s.ll?last:s;if(s.ll)last=s;
+  if(!o||o.dash||(isDest(s)&&!s.ll))return;
+  for(let j=i+1;j<all.length;j++){const t=all[j];if(t.dash&&!isDest(t))return;if(isDest(t)){if(t.ll)s.to=t,s.org=o;return;}}
+ });}
 const naverUrl=(a,b)=>`nmap://route/public?slat=${a.ll[0]}&slng=${a.ll[1]}&sname=${encodeURIComponent(place(a))}&dlat=${b.ll[0]}&dlng=${b.ll[1]}&dname=${encodeURIComponent(place(b))}&appname=${encodeURIComponent(location.origin)}`;
 const kakaoUrl=(a,b)=>`https://map.kakao.com/link/by/traffic/${encodeURIComponent(place(a))},${a.ll[0]},${a.ll[1]}/${encodeURIComponent(place(b))},${b.ll[0]},${b.ll[1]}`;
 const DAYC=['#f2643d','#12a594','#7c5cf0'];
@@ -315,7 +324,7 @@ function render(d){
   const dur=card&&lines[0]&&/소요$/.test(lines[0])?lines.shift().replace(' 소요',''):'';
   const est=(lines.find(isEst)||'').replace(/^\* ?/,'').replace(/ 소요/,'');
   const steps=lines.filter(l=>!isEst(l));
-  const nav=s.from?`<div class="nav"><a class="nv" href="${naverUrl(s.from,s)}" title="${esc(place(s.from))}에서 출발">네이버 지도</a><a class="kk" href="${kakaoUrl(s.from,s)}" target="_blank" rel="noopener" title="${esc(place(s.from))}에서 출발">카카오맵</a></div>`:'';
+  const nav=s.to?`<div class="nav"><span class="to">→ ${esc(place(s.to))}</span><a class="nv" href="${naverUrl(s.org,s.to)}">네이버 지도</a><a class="kk" href="${kakaoUrl(s.org,s.to)}" target="_blank" rel="noopener">카카오맵</a></div>`:'';
   infos[idx]={num,lab,card,dur,est,steps,nav};
   const row=document.createElement('div');rows[idx]=row;
   row.style.setProperty('--i',idx);
@@ -327,7 +336,7 @@ function render(d){
    const chips=[...new Set((chipify(steps.join(' ')).match(/<span class="chip[^"]*">[^<]*<\/span>/g)||[]))].join('');
    const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
    row.className=`leg${s.dash?' ktx':''}${s.kind===N?' none':''}`;
-   row.innerHTML=(steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`)+nav;
+   row.innerHTML=(steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`);
   }
   if(card&&s.ll)row.tabIndex=0;
   row.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>e.stopPropagation());
