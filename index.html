@@ -202,10 +202,12 @@ const map=hasMap?new N_.Map('map',{center:P([37.5,127]),zoom:11,zoomControl:matc
 const iw=hasMap?new N_.InfoWindow({borderWidth:0,backgroundColor:'transparent',disableAnchor:true,pixelOffset:new N_.Point(0,-16)}):null;
 if(hasMap){const el=document.getElementById('map'),z=()=>el.classList.toggle('far',map.getZoom()<12);N_.Event.addListener(map,'zoom_changed',z);z();}
 const list=document.getElementById('list'),tabs=document.getElementById('tabs'),meta=document.getElementById('meta');
-let day=0,region=null,overlays=[];
+let day=0,region=null,overlays=[],curM=null;
+const closeIw=()=>{iw&&iw.close();curM=null;list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));};
+if(hasMap)N_.Event.addListener(map,'click',closeIw);
 const pills=document.getElementById('pills'),tog=document.getElementById('tog');
 function render(d){
- day=d;overlays.forEach(o=>o.setMap(null));overlays=[];iw&&iw.close();list.innerHTML='';
+ day=d;overlays.forEach(o=>o.setMap(null));overlays=[];closeIw();list.innerHTML='';
  const stops=DAYS[d].stops,pinned=stops.filter(s=>s.ll);
  if(hasMap)for(let i=0;i<pinned.length-1;i++)overlays.push(new N_.Polyline({map,path:[P(pinned[i].ll),P(pinned[i+1].ll)],strokeColor:pinned[i].dash?'#5b6573':'#2b59c3',strokeWeight:pinned[i].dash?3:4,strokeOpacity:.8,strokeStyle:pinned[i].dash?'shortdash':'solid',strokeLineCap:'round'}));
  let n=0;
@@ -240,10 +242,10 @@ function render(d){
    :'<div class="dot"></div>'}});
   overlays.push(m);
   const html=`<div class="iw"><b>${s.time} · ${esc(s.title)}</b>${esc(s.detail).replace(/\n/g,'<br>')}</div>`;
-  const open=()=>{iw.setContent(html);iw.open(map,m);list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));row.classList.add('on');};
+  const open=()=>{iw.setContent(html);iw.open(map,m);curM=m;list.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));row.classList.add('on');};
   const go=()=>{map.morph(P(s.ll),Math.max(map.getZoom(),15));open();};
   row.onclick=go;if(card)row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
-  N_.Event.addListener(m,'click',()=>{open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
+  N_.Event.addListener(m,'click',()=>{if(curM===m&&iw.getMap()){closeIw();return;}open();row.scrollIntoView({block:'nearest',behavior:'smooth'});});
  });
  tabs.innerHTML=DAYS.map((x,i)=>`<button class="${i===d?'on':''}" onclick="render(${i})"><span class="d1">DAY ${i+1}</span><span class="d2">${DATES[i][0]} (${DATES[i][1]})</span><span class="d3">${DATES[i][2]}</span></button>`).join('');
  const visits=stops.filter(s=>s.kind===V).length,times=stops.map(s=>s.time).filter(t=>/^\d/.test(t));
