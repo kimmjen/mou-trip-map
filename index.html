@@ -58,6 +58,7 @@ h1{margin:8px 0 0;font:400 27px/1.25 var(--cute);letter-spacing:-.01em;text-wrap
 .name{font:400 19px/1.3 var(--cute);margin-top:3px;text-wrap:balance}
 .addr{font-size:13px;color:var(--sub);margin-top:5px}
 .card .nav{margin-top:12px}
+.leg .nav{margin:0 0 8px 48px}
 .leg{position:relative;margin:0 14px;padding:4px 0 4px 56px}
 .leg::before{content:"";position:absolute;left:30px;top:0;bottom:0;border-left:3px dotted var(--day);opacity:.55}
 .leg.ktx::before{border-left:3px dashed var(--sub);opacity:.6}
@@ -267,7 +268,7 @@ function render(d){
    const chips=[...new Set((chipify(steps.join(' ')).match(/<span class="chip[^"]*">[^<]*<\/span>/g)||[]))].join('');
    const l1=`<div class="l1"><span class="lt">${s.time}</span><span class="lx">${esc(s.title.replace(/^이동 · /,''))}</span>${steps.length?'<i class="chev"></i>':''}</div>${chips||est?`<div class="l2">${chips}${est?`<span class="le">${esc(est)}</span>`:''}</div>`:''}`;
    row.className=`leg${s.dash?' ktx':''}${s.kind===N?' none':''}`;
-   row.innerHTML=steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`;
+   row.innerHTML=steps.length?`<details><summary>${l1}</summary><div class="steps">${steps.map(l=>`<div>${chipify(l)}</div>`).join('')}</div></details>`:`<div class="sum">${l1}</div>`+nav;
   }
   if(card&&s.ll)row.tabIndex=0;
   row.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>e.stopPropagation());
